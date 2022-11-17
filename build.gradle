@@ -92,7 +92,10 @@ dependencies {
     implementation 'com.sparkjava:spark-template-velocity:2.7.1'
 
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+}
 
+configurations.all {
+    exclude group: "edu.wpi.first.wpilibj"
 }
 
 // Simulation configuration (e.g. environment variables).

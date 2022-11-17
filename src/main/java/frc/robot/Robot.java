@@ -4,17 +4,16 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
-import frc.robot.subsystems.gyroscope.Gyroscope;
 import frc.robot.utils.valuetuner.NetworkTableConstant;
+import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.inputs.LoggedNetworkTables;
-import org.littletonrobotics.junction.io.ByteLogReceiver;
-import org.littletonrobotics.junction.io.LogSocketServer;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGReader;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -23,7 +22,7 @@ import org.littletonrobotics.junction.io.LogSocketServer;
  * project.
  */
 public class Robot extends LoggedRobot {
-    public static final Gyroscope gyroscope = new Gyroscope();
+    //    public static final Gyroscope gyroscope = new Gyroscope();
     public static final SwerveDrive swerveSubsystem = new SwerveDrive();
 
     public static boolean debug = false;
@@ -44,14 +43,39 @@ public class Robot extends LoggedRobot {
         robotContainer = RobotContainer.getInstance();
         autonomousCommand = robotContainer.getAutonomousCommand();
 
-        setUseTiming(isReal()); // Run as fast as possible during replay
-        LoggedNetworkTables.getInstance().addTable("/SmartDashboard"); // Log & replay "SmartDashboard" values (no tables are logged by default).
-        Logger.getInstance().recordMetadata("ProjectName", "Wcp-swerve-2023"); // Set a metadata value
+        Logger logger = Logger.getInstance();
 
-        Logger.getInstance().addDataReceiver(new ByteLogReceiver("/media/sda1/")); // Log to USB stick (name will be selected automatically)
-        Logger.getInstance().addDataReceiver(new LogSocketServer(5804)); // Provide log data over the network, viewable in Advantage Scope.
+        // Record metadata
+        logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
+        logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
+        logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
+        logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
+        logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
+        switch (BuildConstants.DIRTY) {
+            case 0:
+                logger.recordMetadata("GitDirty", "All changes committed");
+                break;
+            case 1:
+                logger.recordMetadata("GitDirty", "Uncomitted changes");
+                break;
+            default:
+                logger.recordMetadata("GitDirty", "Unknown");
+                break;
+        }
 
-        SmartDashboard.putBoolean("Is Debug", debug);
+        // Set up data receivers & replay source
+        if (isReal()) {
+            logger.addDataReceiver(new WPILOGWriter("/media/sda1/")); // Log to a USB stick
+            logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
+        } else {
+            setUseTiming(false); // Run as fast as possible
+            String logPath = LogFileUtil.findReplayLog(); // Pull the replay log from AdvantageScope (or prompt the user)
+            logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
+            logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim"))); // Save outputs to a new log
+        }
+
+        // Start AdvantageKit logger
+        logger.start();
     }
 
     /**
