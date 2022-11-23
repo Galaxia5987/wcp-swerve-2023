@@ -31,6 +31,7 @@ public class HolonomicDrive extends CommandBase {
         this.forward = forward;
         this.strafe = strafe;
         this.rotation = rotation;
+        addRequirements(swerveDrive);
     }
 
     @Override

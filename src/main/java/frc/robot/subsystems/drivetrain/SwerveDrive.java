@@ -116,11 +116,11 @@ public class SwerveDrive extends LoggedSubsystem {
     }
 
     public void updateOdometry() {
-        mOdometry.update(Robot.gyroscope.getAngle(), mKinematics.toSwerveModuleStates(getSpeeds()));
+//        mOdometry.update(Robot.gyroscope.getAngle(), mKinematics.toSwerveModuleStates(getSpeeds()));
     }
 
     public void resetOdometry(Pose2d pose) {
-        mOdometry.resetPosition(pose, Robot.gyroscope.getAngle());
+//        mOdometry.resetPosition(pose, Robot.gyroscope.getAngle());
     }
 
     public Pose2d getPose() {
