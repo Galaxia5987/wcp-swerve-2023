@@ -6,77 +6,67 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import frc.robot.Constants;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.LoggedSubsystem;
 import frc.robot.utils.motors.PIDTalon;
 import frc.robot.utils.valuetuner.WebConstant;
 
+import static frc.robot.Constants.*;
+
 public class SwerveModule extends LoggedSubsystem {
     private final WPI_TalonFX driveMotor;
     private final PIDTalon angleMotor;
-    private final SwerveDrive.Module number;
+    private final DutyCycleEncoder encoder;
     private final int offset;
-
+    private final int number;
     private final WebConstant webKp;
     private final WebConstant webKi;
     private final WebConstant webKd;
     private final WebConstant webKf;
-
     private final SwerveModuleLogInputs inputs;
+    private boolean initializedOffset = false;
 
-    public SwerveModule(SwerveDrive.Module number, int driveMotorPort, int angleMotorPort, int offset, boolean driveInverted,
-                        boolean angleInverted, boolean angleSensorPhase, double[] motionMagicConfigs) throws Exception {
+    public SwerveModule(SwerveDrive.Module number, int driveMotorPort, int angleMotorPort, int encoderPort, int offset, boolean driveInverted,
+                        boolean angleInverted, boolean angleSensorPhase, double[] motionMagicConfigs) {
         super(SwerveModuleLogInputs.getInstance(number.number));
-        if (motionMagicConfigs.length != 10) {
-            throw new Exception("Improper motion magic config!");
-        }
+        this.number = number.number;
+        this.offset = offset;
         inputs = SwerveModuleLogInputs.getInstance(number.number);
         driveMotor = new WPI_TalonFX(driveMotorPort);
         angleMotor = new PIDTalon(angleMotorPort);
-        this.number = number;
-        this.offset = offset;
 
-        driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, Constants.TALON_TIMEOUT);
+        driveMotor.configFactoryDefault();
+        angleMotor.configFactoryDefault();
+
+        driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, TALON_TIMEOUT);
         driveMotor.setInverted(driveInverted);
         driveMotor.setNeutralMode(NeutralMode.Brake);
         driveMotor.selectProfileSlot(1, 0);
+        driveMotor.configNeutralDeadband(0.1);
 
-        angleMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, Constants.TALON_TIMEOUT);
-        angleMotor.configFeedbackNotContinuous(false, Constants.TALON_TIMEOUT);
+        angleMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, TALON_TIMEOUT);
+        angleMotor.configFeedbackNotContinuous(false, TALON_TIMEOUT);
         angleMotor.setInverted(angleInverted);
         angleMotor.setSensorPhase(angleSensorPhase);
-
         configMotionMagic(motionMagicConfigs);
 
         angleMotor.setNeutralMode(NeutralMode.Brake);
         angleMotor.selectProfileSlot(0, 0);
 
-        webKp = WebConstant.of(getSubsystemName(), "Angle kP", motionMagicConfigs[MotionMagicConfig.Kp.index]);
-        webKi = WebConstant.of(getSubsystemName(), "Angle kI", motionMagicConfigs[MotionMagicConfig.Ki.index]);
-        webKd = WebConstant.of(getSubsystemName(), "Angle kD", motionMagicConfigs[MotionMagicConfig.Kd.index]);
-        webKf = WebConstant.of(getSubsystemName(), "Angle kF", motionMagicConfigs[MotionMagicConfig.Kf.index]);
-    }
+        encoder = new DutyCycleEncoder(encoderPort);
 
-    @Override
-    public void updateInputs() {
-        inputs.aPosition = angleMotor.getSelectedSensorPosition();
-        inputs.aAngle = toRotation2d(inputs.aPosition - offset);
-        inputs.aCurrent = angleMotor.getSupplyCurrent();
-
-        inputs.dVelocity = driveMotor.get();
-        inputs.dCurrent = driveMotor.getSupplyCurrent();
-    }
-
-    @Override
-    public String getSubsystemName() {
-        return "SwerveModule_" + number.name();
+        webKp = WebConstant.of("SwerveModule" + number, "Angle kP", motionMagicConfigs[MotionMagicConfig.Kp.index]);
+        webKi = WebConstant.of("SwerveModule" + number, "Angle kI", motionMagicConfigs[MotionMagicConfig.Ki.index]);
+        webKd = WebConstant.of("SwerveModule" + number, "Angle kD", motionMagicConfigs[MotionMagicConfig.Kd.index]);
+        webKf = WebConstant.of("SwerveModule" + number, "Angle kF", motionMagicConfigs[MotionMagicConfig.Kf.index]);
     }
 
     public void configMotionMagic(double[] motionMagicConfigs) {
-        angleMotor.config_kP(0, motionMagicConfigs[MotionMagicConfig.Kp.index], Constants.TALON_TIMEOUT);
-        angleMotor.config_kI(0, motionMagicConfigs[MotionMagicConfig.Ki.index], Constants.TALON_TIMEOUT);
-        angleMotor.config_kD(0, motionMagicConfigs[MotionMagicConfig.Kd.index], Constants.TALON_TIMEOUT);
-        angleMotor.config_kF(0, motionMagicConfigs[MotionMagicConfig.Kf.index], Constants.TALON_TIMEOUT);
+        angleMotor.config_kP(0, motionMagicConfigs[MotionMagicConfig.Kp.index], TALON_TIMEOUT);
+        angleMotor.config_kI(0, motionMagicConfigs[MotionMagicConfig.Ki.index], TALON_TIMEOUT);
+        angleMotor.config_kD(0, motionMagicConfigs[MotionMagicConfig.Kd.index], TALON_TIMEOUT);
+        angleMotor.config_kF(0, motionMagicConfigs[MotionMagicConfig.Kf.index], TALON_TIMEOUT);
         angleMotor.configMotionSCurveStrength((int) motionMagicConfigs[MotionMagicConfig.SCurveStrength.index]);
         angleMotor.configMotionCruiseVelocity(motionMagicConfigs[MotionMagicConfig.CruiseVelocity.index]);
         angleMotor.configMotionAcceleration(motionMagicConfigs[MotionMagicConfig.MaxAcceleration.index]);
@@ -85,12 +75,27 @@ public class SwerveModule extends LoggedSubsystem {
         angleMotor.configClosedLoopPeakOutput(0, motionMagicConfigs[MotionMagicConfig.ClosedLoopPeakOutput.index]);
     }
 
-    public Rotation2d toRotation2d(double ticks) {
-        return new Rotation2d(ticks % Constants.TICKS_PER_ROTATION_ANGLE / Constants.TICKS_PER_ROTATION_ANGLE * 2 * Math.PI);
+    public void set(double speed, Rotation2d angle) {
+        SwerveModuleState optimized = SwerveModuleState.optimize(new SwerveModuleState(speed, angle), inputs.aAngle);
+        speed = optimized.speedMetersPerSecond;
+        angle = optimized.angle;
+        inputs.aSetpoint = angle; // Setpoint angle of the wheel
+
+        driveMotor.set(ControlMode.PercentOutput, speed);
+
+        angleMotor.set(ControlMode.MotionMagic, toFalconTicks(inputs.aSetpoint));
     }
 
-    public int toTicks(Rotation2d angle) {
-        return (int) (angle.getRadians() / (2 * Math.PI) * Constants.TICKS_PER_ROTATION_ANGLE);
+    public Rotation2d toWheelAbsoluteAngle(double ticks) {
+        return new Rotation2d(((ticks / TICKS_PER_ROTATION) * 2 * Math.PI * ANGLE_GEAR_RATIO) % (2 * Math.PI));
+    }
+
+    public int toFalconTicks(Rotation2d angle) {
+        return (int) (((angle.getDegrees() / 360) * TICKS_PER_ROTATION) / ANGLE_GEAR_RATIO);
+    }
+
+    public int absoluteEncoderToAbsoluteFalcon(double encoder) {
+        return (int) (encoder * TICKS_PER_ROTATION / ANGLE_GEAR_RATIO);
     }
 
     public Rotation2d getAngle() {
@@ -101,20 +106,47 @@ public class SwerveModule extends LoggedSubsystem {
         return new SwerveModuleState(inputs.dVelocity, getAngle());
     }
 
-    public void set(double speed, Rotation2d angle) {
-        SwerveModuleState optimized = SwerveModuleState.optimize(new SwerveModuleState(speed, angle), getAngle());
-        speed = optimized.speedMetersPerSecond;
-        angle = optimized.angle;
+    public void stop() {
+        angleMotor.stopMotor();
+        driveMotor.stopMotor();
+    }
 
-        driveMotor.set(ControlMode.PercentOutput, speed);
+    @Override
+    public void updateInputs() {
+        double encoderRelativeAngle = absoluteEncoderToAbsoluteFalcon(encoder.getAbsolutePosition()) - offset;
+        while (encoderRelativeAngle > TICKS_PER_ROTATION / 2) {
+            encoderRelativeAngle -= TICKS_PER_ROTATION;
+        }
 
-        int error = toTicks(angle.minus(toRotation2d(inputs.aPosition))) + offset;
-        angleMotor.set(ControlMode.MotionMagic, inputs.aPosition + error);
+        inputs.aPosition = angleMotor.getSelectedSensorPosition();
+        inputs.aAngle = toWheelAbsoluteAngle(inputs.aPosition); // Angle of the wheel
+        inputs.encoderAngle = toWheelAbsoluteAngle(absoluteEncoderToAbsoluteFalcon(encoder.getAbsolutePosition()));
+        inputs.encoderRelativeAngle = toWheelAbsoluteAngle(encoderRelativeAngle);
+        inputs.offsetAngle = toWheelAbsoluteAngle(offset);
+        inputs.aCurrent = angleMotor.getSupplyCurrent();
+
+        inputs.dVelocity = driveMotor.get();
+        inputs.dCurrent = driveMotor.getSupplyCurrent();
     }
 
     @Override
     public void periodic() {
+        if (!initializedOffset && encoder.isConnected()) {
+            double newPosition = absoluteEncoderToAbsoluteFalcon(encoder.getAbsolutePosition()) - offset;
+            angleMotor.setSelectedSensorPosition(newPosition);
+            initializedOffset = true;
+        }
+
         angleMotor.updatePID(0, webKp.get(), webKi.get(), webKd.get(), webKf.get());
+
+        if (SmartDashboard.getBoolean("Zero Swerve", false)) {
+            System.out.println("Encoder " + number + ":" + toFalconTicks(inputs.encoderAngle));
+        }
+    }
+
+    @Override
+    public String getSubsystemName() {
+        return "SwerveModule" + number;
     }
 
     public enum MotionMagicConfig {

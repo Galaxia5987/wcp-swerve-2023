@@ -8,7 +8,7 @@ public class DriveXboxController extends HolonomicDrive {
     private final BooleanSupplier turnToTarget;
 
     public DriveXboxController(XboxController controller, BooleanSupplier turnToTarget) {
-        super(() -> -controller.getLeftY(), controller::getLeftX, controller::getRightX);
+        super(controller::getLeftY, controller::getLeftX, controller::getRightX);
         this.turnToTarget = turnToTarget;
     }
 

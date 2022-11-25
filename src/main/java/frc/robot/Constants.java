@@ -9,9 +9,8 @@ public final class Constants {
     public static final Pose2d HUB_POSE = new Pose2d(8.23, 4.115, new Rotation2d());
 
     // Swerve
-    public static final int[] OFFSETS = {-865, -606, -703, -870};
-    public static final double TICKS_PER_ROTATION_ANGLE = 1024;
-    public static final double TICKS_PER_ROTATION_DRIVE = 2048;
+    public static final double TICKS_PER_ROTATION = 2048;
+    public static final int[] OFFSETS = {20111, 6525, 15875, 1836};
 
     public static final double DRIVETRAIN_TRACK_WIDTH_METERS = 0.5224;
     public static final double DRIVETRAIN_WHEELBASE_METERS = 0.6624;
@@ -25,13 +24,14 @@ public final class Constants {
     public static final int REAR_RIGHT_MODULE_DRIVE_MOTOR_ID = 5;
     public static final int REAR_RIGHT_MODULE_STEER_MOTOR_ID = 2;
     public static final double DRIVE_REDUCTION = 0.1;
+    public static final double ANGLE_GEAR_RATIO = (14.0 / 72.0) * 0.5;
     public static final double WHEEL_DIAMETER = 0.1;
     // kP, kI, kD, kF, sCurveStrength, cruiseVelocity, acceleration, allowableError,
     // maxIntegralAccum, peakOutput
-    public static final double[] FRONT_LEFT_MOTION_MAGIC_CONFIGS = {2, 0, 0, 0, 1, 400, 1300, 10, 5, 1};
-    public static final double[] FRONT_RIGHT_MOTION_MAGIC_CONFIGS = {2, 0, 0, 0, 1, 400, 1300, 10, 5, 1};
-    public static final double[] REAR_LEFT_MOTION_MAGIC_CONFIGS = {2, 0, 0, 0, 1, 400, 1300, 10, 5, 1};
-    public static final double[] REAR_RIGHT_MOTION_MAGIC_CONFIGS = {2, 0, 0, 0, 1, 400, 1300, 10, 5, 1};
+    public static final double[] FRONT_LEFT_MOTION_MAGIC_CONFIGS = {1.2, 0, 0, 0.2, 1, 21288, 30000, 10, 5, 1};
+    public static final double[] FRONT_RIGHT_MOTION_MAGIC_CONFIGS = {1.2, 0, 0, 0.2, 1, 21288, 30000, 10, 5, 1};
+    public static final double[] REAR_LEFT_MOTION_MAGIC_CONFIGS = {1.2, 0, 0, 0.2, 1, 21288, 30000, 10, 5, 1};
+    public static final double[] REAR_RIGHT_MOTION_MAGIC_CONFIGS = {1.2, 0, 0, 0.2, 1, 21288, 30000, 10, 5, 1};
     public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
             DRIVE_REDUCTION *
             WHEEL_DIAMETER * Math.PI;

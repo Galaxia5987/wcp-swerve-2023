@@ -1,9 +1,7 @@
 package frc.robot.utils;
 
-import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
-import frc.robot.utils.math.AngleUtil;
 
 /**
  * This class constitutes all the information provided by multiple subsystem.

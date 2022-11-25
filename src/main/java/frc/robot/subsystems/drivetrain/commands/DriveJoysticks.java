@@ -8,7 +8,7 @@ public class DriveJoysticks extends HolonomicDrive {
     private final BooleanSupplier turnToTarget;
 
     public DriveJoysticks(Joystick leftJoystick, Joystick rightJoystick, BooleanSupplier turnToTarget) {
-        super(() -> -leftJoystick.getY(), leftJoystick::getX, rightJoystick::getX);
+        super(() -> -leftJoystick.getY(), () -> -leftJoystick.getX(), rightJoystick::getX);
         this.turnToTarget = turnToTarget;
     }
 

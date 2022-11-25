@@ -1,6 +1,7 @@
 package frc.robot.utils;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 public class Utils {
     public static final double EPSILON = 1e-9;
@@ -39,5 +40,13 @@ public class Utils {
 
     public static double[] pose2dToArray(Pose2d pose) {
         return new double[]{pose.getX(), pose.getY(), pose.getRotation().getDegrees()};
+    }
+
+    public static double[] chassisSpeedsToArray(ChassisSpeeds speeds) {
+        return new double[]{speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond};
+    }
+
+    public static ChassisSpeeds arrayToChassisSpeeds(double[] array) {
+        return new ChassisSpeeds(array[0], array[1], array[2]);
     }
 }
