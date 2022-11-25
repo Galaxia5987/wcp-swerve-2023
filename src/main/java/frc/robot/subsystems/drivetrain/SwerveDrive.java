@@ -1,6 +1,5 @@
 package frc.robot.subsystems.drivetrain;
 
-import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -10,7 +9,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Robot;
 import frc.robot.subsystems.LoggedSubsystem;
-import frc.robot.subsystems.gyroscope.Gyroscope;
 import frc.robot.utils.Utils;
 
 import static frc.robot.Constants.*;
@@ -29,80 +27,99 @@ public class SwerveDrive extends LoggedSubsystem {
             new Pose2d());
 
     private final SwerveDriveLogInputs inputs;
-    private SwerveModule mFrontLeft = null;
-    private SwerveModule mFrontRight = null;
-    private SwerveModule mRearLeft = null;
-    private SwerveModule mRearRight = null;
+    private final SwerveModule mFrontLeft;
+    private final SwerveModule mFrontRight;
+    private final SwerveModule mRearLeft;
+    private final SwerveModule mRearRight;
     private ChassisSpeeds mChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
     public SwerveDrive() {
         super(SwerveDriveLogInputs.getInstance());
         inputs = SwerveDriveLogInputs.getInstance();
 
-        try {
-            mFrontLeft = new SwerveModule(
-                    Module.FL,
-                    FRONT_LEFT_MODULE_DRIVE_MOTOR_ID,
-                    FRONT_LEFT_MODULE_STEER_MOTOR_ID,
-                    OFFSETS[Module.FL.number],
-                    FRONT_LEFT_DRIVE_INVERTED,
-                    FRONT_LEFT_ANGLE_INVERTED,
-                    FRONT_LEFT_ANGLE_SENSOR_PHASE,
-                    FRONT_LEFT_MOTION_MAGIC_CONFIGS);
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
+        mFrontLeft = new SwerveModule(
+                Module.FL,
+                FRONT_LEFT_MODULE_DRIVE_MOTOR_ID,
+                FRONT_LEFT_MODULE_STEER_MOTOR_ID,
+                3,
+                OFFSETS[Module.FL.number],
+                FRONT_LEFT_DRIVE_INVERTED,
+                FRONT_LEFT_ANGLE_INVERTED,
+                FRONT_LEFT_ANGLE_SENSOR_PHASE,
+                FRONT_LEFT_MOTION_MAGIC_CONFIGS);
+        mFrontRight = new SwerveModule(
+                Module.FR,
+                FRONT_RIGHT_MODULE_DRIVE_MOTOR_ID,
+                FRONT_RIGHT_MODULE_STEER_MOTOR_ID,
+                2,
+                OFFSETS[Module.FR.number],
+                FRONT_RIGHT_DRIVE_INVERTED,
+                FRONT_RIGHT_ANGLE_INVERTED,
+                FRONT_RIGHT_ANGLE_SENSOR_PHASE,
+                FRONT_RIGHT_MOTION_MAGIC_CONFIGS);
+        mRearLeft = new SwerveModule(
+                Module.RL,
+                REAR_LEFT_MODULE_DRIVE_MOTOR_ID,
+                REAR_LEFT_MODULE_STEER_MOTOR_ID,
+                0,
+                OFFSETS[Module.RL.number],
+                REAR_LEFT_DRIVE_INVERTED,
+                REAR_LEFT_ANGLE_INVERTED,
+                REAR_LEFT_ANGLE_SENSOR_PHASE,
+                REAR_LEFT_MOTION_MAGIC_CONFIGS);
+        mRearRight = new SwerveModule(
+                Module.RR,
+                REAR_RIGHT_MODULE_DRIVE_MOTOR_ID,
+                REAR_RIGHT_MODULE_STEER_MOTOR_ID,
+                1,
+                OFFSETS[Module.RR.number],
+                REAR_RIGHT_DRIVE_INVERTED,
+                REAR_RIGHT_ANGLE_INVERTED,
+                REAR_RIGHT_ANGLE_SENSOR_PHASE,
+                REAR_RIGHT_MOTION_MAGIC_CONFIGS);
+    }
 
-        try {
-            mFrontRight = new SwerveModule(
-                    Module.FR,
-                    FRONT_RIGHT_MODULE_DRIVE_MOTOR_ID,
-                    FRONT_RIGHT_MODULE_STEER_MOTOR_ID,
-                    OFFSETS[Module.FR.number],
-                    FRONT_RIGHT_DRIVE_INVERTED,
-                    FRONT_RIGHT_ANGLE_INVERTED,
-                    FRONT_RIGHT_ANGLE_SENSOR_PHASE,
-                    FRONT_RIGHT_MOTION_MAGIC_CONFIGS);
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
+    public SwerveDriveKinematics getKinematics() {
+        return mKinematics;
+    }
 
-        try {
-            mRearLeft = new SwerveModule(
-                    Module.RL,
-                    REAR_LEFT_MODULE_DRIVE_MOTOR_ID,
-                    REAR_LEFT_MODULE_STEER_MOTOR_ID,
-                    OFFSETS[Module.RL.number],
-                    REAR_LEFT_DRIVE_INVERTED,
-                    REAR_LEFT_ANGLE_INVERTED,
-                    REAR_LEFT_ANGLE_SENSOR_PHASE,
-                    REAR_LEFT_MOTION_MAGIC_CONFIGS);
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
+    public void updateOdometry() {
+        mOdometry.update(Robot.gyroscope.getAngle(), mKinematics.toSwerveModuleStates(getSpeeds()));
+    }
 
-        try {
-            mRearRight = new SwerveModule(
-                    Module.RR,
-                    REAR_RIGHT_MODULE_DRIVE_MOTOR_ID,
-                    REAR_RIGHT_MODULE_STEER_MOTOR_ID,
-                    OFFSETS[Module.RR.number],
-                    REAR_RIGHT_DRIVE_INVERTED,
-                    REAR_RIGHT_ANGLE_INVERTED,
-                    REAR_RIGHT_ANGLE_SENSOR_PHASE,
-                    REAR_RIGHT_MOTION_MAGIC_CONFIGS);
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
+    public void resetOdometry(Pose2d pose) {
+        mOdometry.resetPosition(pose, Robot.gyroscope.getAngle());
+    }
+
+    public Pose2d getPose() {
+        return mOdometry.getPoseMeters();
+    }
+
+    public void drive(ChassisSpeeds chassisSpeeds) {
+        drive(chassisSpeeds.vxMetersPerSecond,
+                chassisSpeeds.vyMetersPerSecond,
+                chassisSpeeds.omegaRadiansPerSecond);
+    }
+
+    public void drive(double vx, double vy, double theta) {
+        mChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+                vx,
+                vy,
+                theta,
+                Robot.gyroscope.getAngle());
+    }
+
+    public void setStates(SwerveModuleState[] states) {
+        mChassisSpeeds = mKinematics.toChassisSpeeds(states);
     }
 
     @Override
     public void updateInputs() {
-        inputs.speeds = mKinematics.toChassisSpeeds(
+        inputs.speeds = Utils.chassisSpeedsToArray(mKinematics.toChassisSpeeds(
                 mFrontLeft.getState(),
                 mFrontRight.getState(),
                 mRearLeft.getState(),
-                mRearRight.getState());
+                mRearRight.getState()));
         inputs.pose = Utils.pose2dToArray(getPose());
     }
 
@@ -111,36 +128,15 @@ public class SwerveDrive extends LoggedSubsystem {
         return "SwerveDrive";
     }
 
-    public SwerveDriveKinematics getKinematics() {
-        return mKinematics;
-    }
-
-    public void updateOdometry() {
-//        mOdometry.update(Robot.gyroscope.getAngle(), mKinematics.toSwerveModuleStates(getSpeeds()));
-    }
-
-    public void resetOdometry(Pose2d pose) {
-//        mOdometry.resetPosition(pose, Robot.gyroscope.getAngle());
-    }
-
-    public Pose2d getPose() {
-        return mOdometry.getPoseMeters();
-    }
-
-    public void drive(ChassisSpeeds chassisSpeeds) {
-        mChassisSpeeds = chassisSpeeds;
-    }
-
-    public void drive(double vx, double vy, double theta) {
-        drive(new ChassisSpeeds(vx, vy, theta));
-    }
-
-    public void setStates(SwerveModuleState[] states) {
-        mChassisSpeeds = mKinematics.toChassisSpeeds(states);
-    }
-
     public ChassisSpeeds getSpeeds() {
-        return inputs.speeds;
+        return Utils.arrayToChassisSpeeds(inputs.speeds);
+    }
+
+    public void stop() {
+        mFrontLeft.stop();
+        mFrontRight.stop();
+        mRearLeft.stop();
+        mRearRight.stop();
     }
 
     @Override

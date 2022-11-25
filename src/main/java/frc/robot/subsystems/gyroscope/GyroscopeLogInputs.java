@@ -7,9 +7,9 @@ import org.littletonrobotics.junction.inputs.LoggableInputs;
 public class GyroscopeLogInputs implements LoggableInputs {
     private static GyroscopeLogInputs INSTANCE = null;
 
-    public Rotation2d angle;
-    public Rotation2d rawAngle;
-    public Rotation2d zeroAngle;
+    public Rotation2d angle = Rotation2d.fromDegrees(0);
+    public Rotation2d rawAngle = Rotation2d.fromDegrees(0);
+    public Rotation2d zeroAngle = Rotation2d.fromDegrees(0);
 
     private GyroscopeLogInputs() {
     }
