@@ -3,11 +3,13 @@ package frc.robot.autonomous;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.utils.controllers.PIDFController;
 import frc.robot.utils.valuetuner.WebConstant;
+import org.littletonrobotics.junction.Logger;
 
 public class PathFollowerCommand extends CommandBase {
     private final SwerveDrive swerveDrive = Robot.swerveSubsystem;
@@ -15,21 +17,10 @@ public class PathFollowerCommand extends CommandBase {
     private final PathPlannerTrajectory trajectory;
     private final boolean firstPath;
     private final Timer timer;
-    private Trajectory.State lastState;
-
     private final PIDFController xController;
     private final PIDFController yController;
     private final PIDFController rotationController;
-
-    private final WebConstant xyKp = WebConstant.of("PathFollowerCommand", "xyKp", 0.0);
-    private final WebConstant xyKi = WebConstant.of("PathFollowerCommand", "xyKi", 0.0);
-    private final WebConstant xyKd = WebConstant.of("PathFollowerCommand", "xyKd", 0.0);
-    private final WebConstant xyKf = WebConstant.of("PathFollowerCommand", "xyKf", 0.0);
-
-    private final WebConstant rotationKp = WebConstant.of("PathFollowerCommand", "rotationKp", 0.0);
-    private final WebConstant rotationKi = WebConstant.of("PathFollowerCommand", "rotationKi", 0.0);
-    private final WebConstant rotationKd = WebConstant.of("PathFollowerCommand", "rotationKd", 0.0);
-    private final WebConstant rotationKf = WebConstant.of("PathFollowerCommand", "rotationKf", 0.0);
+    private Trajectory.State lastState;
 
     public PathFollowerCommand(PathPlannerTrajectory trajectory, boolean firstPath) {
         this.trajectory = trajectory;
@@ -39,6 +30,18 @@ public class PathFollowerCommand extends CommandBase {
         xController = new PIDFController(0, 0, 0, 0);
         yController = new PIDFController(0, 0, 0, 0);
         rotationController = new PIDFController(0, 0, 0, 0);
+
+        Logger.getInstance().recordOutput("Current Path Following Command", trajectory.toString());
+
+        SmartDashboard.putNumber("PathFollowerCommand_" + "xyKp", 1.0);
+        SmartDashboard.putNumber("PathFollowerCommand_" + "xyKi", 0.0);
+        SmartDashboard.putNumber("PathFollowerCommand_" + "xyKd", 0.0);
+        SmartDashboard.putNumber("PathFollowerCommand_" + "xyKf", 0.0);
+
+        SmartDashboard.putNumber("PathFollowerCommand_" + "rotationKp", 1.0);
+        SmartDashboard.putNumber("PathFollowerCommand_" + "rotationKi", 0.0);
+        SmartDashboard.putNumber("PathFollowerCommand_" + "rotationKd", 0.0);
+        SmartDashboard.putNumber("PathFollowerCommand_" + "rotationKf", 0.0);
     }
 
     @Override
@@ -47,9 +50,24 @@ public class PathFollowerCommand extends CommandBase {
         timer.reset();
         lastState = trajectory.sample(0);
 
-        xController.setPIDF(xyKp.get(), xyKi.get(), xyKd.get(), xyKf.get());
-        yController.setPIDF(xyKp.get(), xyKi.get(), xyKd.get(), xyKf.get());
-        rotationController.setPIDF(rotationKp.get(), rotationKi.get(), rotationKd.get(), rotationKf.get());
+        xController.setPIDF(
+                SmartDashboard.getNumber("PathFollowerCommand_" + "xyKp", 1.0),
+                SmartDashboard.getNumber("PathFollowerCommand_" + "xyKi", 0.0),
+                SmartDashboard.getNumber("PathFollowerCommand_" + "xyKd", 0.0),
+                SmartDashboard.getNumber("PathFollowerCommand_" + "xyKf", 0.0)
+        );
+        yController.setPIDF(
+                SmartDashboard.getNumber("PathFollowerCommand_" + "xyKp", 1.0),
+                SmartDashboard.getNumber("PathFollowerCommand_" + "xyKi", 0.0),
+                SmartDashboard.getNumber("PathFollowerCommand_" + "xyKd", 0.0),
+                SmartDashboard.getNumber("PathFollowerCommand_" + "xyKf", 0.0)
+        );
+        rotationController.setPIDF(
+                SmartDashboard.getNumber("PathFollowerCommand_" + "rotationKp", 1.0),
+                SmartDashboard.getNumber("PathFollowerCommand_" + "rotationKi", 0.0),
+                SmartDashboard.getNumber("PathFollowerCommand_" + "rotationKd", 0.0),
+                SmartDashboard.getNumber("PathFollowerCommand_" + "rotationKf", 0.0)
+        );
 
         if (firstPath) {
             swerveDrive.resetOdometry(trajectory.getInitialPose());

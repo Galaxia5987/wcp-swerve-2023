@@ -28,13 +28,14 @@ public final class Constants {
     public static final double WHEEL_DIAMETER = 0.1;
     // kP, kI, kD, kF, sCurveStrength, cruiseVelocity, acceleration, allowableError,
     // maxIntegralAccum, peakOutput
-    public static final double[] FRONT_LEFT_MOTION_MAGIC_CONFIGS = {1.3, 0, 0, 0.2, 1, 21288, 28000, 10, 5, 1};
-    public static final double[] FRONT_RIGHT_MOTION_MAGIC_CONFIGS = {1.3, 0, 0, 0.2, 1, 21288, 28000, 10, 5, 1};
-    public static final double[] REAR_LEFT_MOTION_MAGIC_CONFIGS = {1.3, 0, 0, 0.2, 1, 21288, 28000, 10, 5, 1};
-    public static final double[] REAR_RIGHT_MOTION_MAGIC_CONFIGS = {1.3, 0, 0, 0.2, 1, 21288, 28000, 10, 5, 1};
+    public static final double[] FRONT_LEFT_MOTION_MAGIC_CONFIGS = {1.2, 0, 0, 0.2, 1, 21288, 28000, 10, 5, 1};
+    public static final double[] FRONT_RIGHT_MOTION_MAGIC_CONFIGS = {1.2, 0, 0, 0.2, 1, 21288, 28000, 10, 5, 1};
+    public static final double[] REAR_LEFT_MOTION_MAGIC_CONFIGS = {1.2, 0, 0, 0.2, 1, 21288, 28000, 10, 5, 1};
+    public static final double[] REAR_RIGHT_MOTION_MAGIC_CONFIGS = {1.2, 0, 0, 0.2, 1, 21288, 28000, 10, 5, 1};
     public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
             DRIVE_REDUCTION *
             WHEEL_DIAMETER * Math.PI;
+    public static final double MAX_ACCELERATION = MAX_VELOCITY_METERS_PER_SECOND / 2;
     public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
             Math.hypot(DRIVETRAIN_TRACK_WIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
     public static final double TARGET_ADJUST_Kp = 0;

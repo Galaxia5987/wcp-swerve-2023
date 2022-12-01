@@ -1,9 +1,12 @@
 package frc.robot;
 
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.autonomous.PathFollowerCommand;
 import frc.robot.subsystems.drivetrain.commands.DriveXboxController;
 
 public class RobotContainer {
@@ -47,6 +50,10 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return null;
+        return new PathFollowerCommand(
+                PathPlanner.loadPath("Straight Path",
+                        Constants.MAX_VELOCITY_METERS_PER_SECOND,
+                        Constants.MAX_ACCELERATION),
+                true);
     }
 }
