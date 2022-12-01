@@ -7,6 +7,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.subsystems.LoggedSubsystem;
 import frc.robot.utils.Utils;
@@ -102,6 +103,16 @@ public class SwerveDrive extends LoggedSubsystem {
     }
 
     public void drive(double vx, double vy, double theta) {
+        if (Utils.epsilonEquals(vx, 0, 0.05) &&
+                Utils.epsilonEquals(vy, 0, 0.05) &&
+                Utils.epsilonEquals(theta, 0, 0.05)) {
+            mFrontLeft.stop();
+            mFrontRight.stop();
+            mRearLeft.stop();
+            mRearRight.stop();
+            return;
+        }
+
         mChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
                 vx,
                 vy,
@@ -154,6 +165,14 @@ public class SwerveDrive extends LoggedSubsystem {
                 states[Module.RL.number].angle);
         mRearRight.set(states[Module.RR.number].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND,
                 states[Module.RR.number].angle);
+
+        if (SmartDashboard.getBoolean("Zero Swerve", false)) {
+            SmartDashboard.putString("Zero Positions", "{" +
+                    mFrontLeft.getEncoderTicks() + ", " +
+                    mFrontRight.getEncoderTicks() + ", " +
+                    mRearLeft.getEncoderTicks() + ", " +
+                    mRearRight.getEncoderTicks() + "}");
+        }
     }
 
     public enum Module {

@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.LoggedSubsystem;
 import frc.robot.utils.motors.PIDTalon;
-import frc.robot.utils.valuetuner.WebConstant;
 
 import static frc.robot.Constants.*;
 
@@ -19,19 +18,17 @@ public class SwerveModule extends LoggedSubsystem {
     private final PIDTalon angleMotor;
     private final DutyCycleEncoder encoder;
     private final int offset;
-    private final int number;
-    private final WebConstant webKp;
-    private final WebConstant webKi;
-    private final WebConstant webKd;
-    private final WebConstant webKf;
+    private final SwerveDrive.Module number;
     private final SwerveModuleLogInputs inputs;
     private boolean initializedOffset = false;
+    private final double[] motionMagicConfigs;
 
     public SwerveModule(SwerveDrive.Module number, int driveMotorPort, int angleMotorPort, int encoderPort, int offset, boolean driveInverted,
                         boolean angleInverted, boolean angleSensorPhase, double[] motionMagicConfigs) {
         super(SwerveModuleLogInputs.getInstance(number.number));
-        this.number = number.number;
+        this.number = number;
         this.offset = offset;
+        this.motionMagicConfigs = motionMagicConfigs;
         inputs = SwerveModuleLogInputs.getInstance(number.number);
         driveMotor = new WPI_TalonFX(driveMotorPort);
         angleMotor = new PIDTalon(angleMotorPort);
@@ -56,10 +53,16 @@ public class SwerveModule extends LoggedSubsystem {
 
         encoder = new DutyCycleEncoder(encoderPort);
 
-        webKp = WebConstant.of("SwerveModule" + number, "Angle kP", motionMagicConfigs[MotionMagicConfig.Kp.index]);
-        webKi = WebConstant.of("SwerveModule" + number, "Angle kI", motionMagicConfigs[MotionMagicConfig.Ki.index]);
-        webKd = WebConstant.of("SwerveModule" + number, "Angle kD", motionMagicConfigs[MotionMagicConfig.Kd.index]);
-        webKf = WebConstant.of("SwerveModule" + number, "Angle kF", motionMagicConfigs[MotionMagicConfig.Kf.index]);
+        SmartDashboard.putNumber(number.name() + "_kP", motionMagicConfigs[MotionMagicConfig.Kp.index]);
+        SmartDashboard.putNumber(number.name() + "_kI", motionMagicConfigs[MotionMagicConfig.Ki.index]);
+        SmartDashboard.putNumber(number.name() + "_kD", motionMagicConfigs[MotionMagicConfig.Kd.index]);
+        SmartDashboard.putNumber(number.name() + "_kF", motionMagicConfigs[MotionMagicConfig.Kf.index]);
+        SmartDashboard.putNumber(number.name() + "_sCurveStrength", motionMagicConfigs[MotionMagicConfig.SCurveStrength.index]);
+        SmartDashboard.putNumber(number.name() + "_cruiseVelocity", motionMagicConfigs[MotionMagicConfig.CruiseVelocity.index]);
+        SmartDashboard.putNumber(number.name() + "_maxAcceleration", motionMagicConfigs[MotionMagicConfig.MaxAcceleration.index]);
+        SmartDashboard.putNumber(number.name() + "_allowableClosedLoopError", motionMagicConfigs[MotionMagicConfig.ClosedLoopError.index]);
+        SmartDashboard.putNumber(number.name() + "_maxIntegralAccumulator", motionMagicConfigs[MotionMagicConfig.MaxIntegralAccumulator.index]);
+        SmartDashboard.putNumber(number.name() + "_closedLoopPeakOutput", motionMagicConfigs[MotionMagicConfig.ClosedLoopPeakOutput.index]);
     }
 
     public void configMotionMagic(double[] motionMagicConfigs) {
@@ -102,6 +105,10 @@ public class SwerveModule extends LoggedSubsystem {
         return inputs.aAngle;
     }
 
+    public double getEncoderTicks() {
+        return toFalconTicks(inputs.encoderAngle);
+    }
+
     public SwerveModuleState getState() {
         return new SwerveModuleState(inputs.dVelocity, getAngle());
     }
@@ -137,16 +144,25 @@ public class SwerveModule extends LoggedSubsystem {
             initializedOffset = true;
         }
 
-        angleMotor.updatePID(0, webKp.get(), webKi.get(), webKd.get(), webKf.get());
+        if (SmartDashboard.getBoolean("Swerve Tune Motion Magic", false)) {
+            angleMotor.updatePID(0,
+                    SmartDashboard.getNumber(number.name() + "_kP", motionMagicConfigs[MotionMagicConfig.Kp.index]),
+                    SmartDashboard.getNumber(number.name() + "_kI", motionMagicConfigs[MotionMagicConfig.Ki.index]),
+                    SmartDashboard.getNumber(number.name() + "_kD", motionMagicConfigs[MotionMagicConfig.Kd.index]),
+                    SmartDashboard.getNumber(number.name() + "_kF", motionMagicConfigs[MotionMagicConfig.Kf.index]));
 
-        if (SmartDashboard.getBoolean("Zero Swerve", false)) {
-            System.out.println("Encoder " + number + ":" + toFalconTicks(inputs.encoderAngle));
+            angleMotor.configMotionCruiseVelocity(
+                    SmartDashboard.getNumber(number.name() + "_cruiseVelocity",
+                            motionMagicConfigs[MotionMagicConfig.CruiseVelocity.index]));
+            angleMotor.configMotionAcceleration(
+                    SmartDashboard.getNumber(number.name() + "_maxAcceleration",
+                            motionMagicConfigs[MotionMagicConfig.MaxAcceleration.index]));
         }
     }
 
     @Override
     public String getSubsystemName() {
-        return "SwerveModule" + number;
+        return "SwerveModule_" + number;
     }
 
     public enum MotionMagicConfig {

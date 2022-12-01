@@ -66,7 +66,7 @@ public class PathFollowerCommand extends CommandBase {
 
         double velocityX = xController.calculate(currentVelocity.vxMetersPerSecond, desiredVelocityXY.getX());
         double velocityY = yController.calculate(currentVelocity.vyMetersPerSecond, desiredVelocityXY.getY());
-        double rotation  = rotationController.calculate(currentVelocity.omegaRadiansPerSecond, desiredVelocityRotation);
+        double rotation = rotationController.calculate(currentVelocity.omegaRadiansPerSecond, desiredVelocityRotation);
 
         swerveDrive.drive(velocityX, velocityY, rotation);
 

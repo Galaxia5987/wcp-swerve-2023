@@ -6,8 +6,8 @@ import org.littletonrobotics.junction.inputs.LoggableInputs;
 public class SwerveDriveLogInputs implements LoggableInputs {
     private static SwerveDriveLogInputs INSTANCE = null;
 
-    public double[] speeds = new double[]{0,0,0};
-    public double[] pose = new double[]{0,0,0};
+    public double[] speeds = new double[]{0, 0, 0};
+    public double[] pose = new double[]{0, 0, 0};
 
     private SwerveDriveLogInputs() {
     }

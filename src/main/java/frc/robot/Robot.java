@@ -44,7 +44,7 @@ public class Robot extends LoggedRobot {
 
         setUseTiming(isReal()); // Run as fast as possible during replay
         LoggedNetworkTables.getInstance().addTable("/SmartDashboard"); // Log & replay "SmartDashboard" values (no tables are logged by default).
-        Logger.getInstance().recordMetadata("ProjectName", "Recode2022"); // Set a metadata value
+        Logger.getInstance().recordMetadata("ProjectName", "Wcp-Swerve-2023"); // Set a metadata value
 
         Logger.getInstance().addDataReceiver(new ByteLogReceiver("/media/sda1/")); // Log to USB stick (name will be selected automatically)
         Logger.getInstance().addDataReceiver(new LogSocketServer(5804)); // Provide log data over the network, viewable in Advantage Scope.
@@ -53,6 +53,7 @@ public class Robot extends LoggedRobot {
         NetworkTableConstant.initializeAllConstants();
 
         SmartDashboard.putBoolean("Zero Swerve", false);
+        SmartDashboard.putBoolean("Swerve Tune Motion Magic", false);
     }
 
     /**
