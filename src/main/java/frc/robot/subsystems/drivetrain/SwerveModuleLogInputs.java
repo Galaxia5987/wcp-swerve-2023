@@ -8,7 +8,6 @@ public class SwerveModuleLogInputs implements LoggableInputs {
     public Rotation2d aAngle = Rotation2d.fromDegrees(0);
     public Rotation2d aSetpoint = Rotation2d.fromDegrees(0);
     public Rotation2d encoderAngle = Rotation2d.fromDegrees(0);
-    public Rotation2d encoderRelativeAngle = Rotation2d.fromDegrees(0);
     public Rotation2d offsetAngle = Rotation2d.fromDegrees(0);
     public double aPosition = 0;
     public double aCurrent = 0;
@@ -24,7 +23,6 @@ public class SwerveModuleLogInputs implements LoggableInputs {
         table.put("aAngle", aAngle.getDegrees());
         table.put("aSetpoint", aSetpoint.getDegrees());
         table.put("encoderAngle", encoderAngle.getDegrees());
-        table.put("encoderRelativeAngle", encoderRelativeAngle.getDegrees());
         table.put("offsetAngle", offsetAngle.getDegrees());
         table.put("aPosition", aPosition);
         table.put("aCurrent", aCurrent);

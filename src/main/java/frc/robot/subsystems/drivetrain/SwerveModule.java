@@ -118,15 +118,9 @@ public class SwerveModule extends LoggedSubsystem<SwerveModuleLogInputs> {
 
     @Override
     public void updateInputs() {
-        double encoderRelativeAngle = absoluteEncoderToAbsoluteFalcon(encoder.getAbsolutePosition()) - offset;
-        while (encoderRelativeAngle > TICKS_PER_ROTATION / 2) {
-            encoderRelativeAngle -= TICKS_PER_ROTATION;
-        }
-
         loggerInputs.aPosition = angleMotor.getSelectedSensorPosition();
         loggerInputs.aAngle = toWheelAbsoluteAngle(loggerInputs.aPosition); // Angle of the wheel
         loggerInputs.encoderAngle = toWheelAbsoluteAngle(absoluteEncoderToAbsoluteFalcon(encoder.getAbsolutePosition()));
-        loggerInputs.encoderRelativeAngle = toWheelAbsoluteAngle(encoderRelativeAngle);
         loggerInputs.offsetAngle = toWheelAbsoluteAngle(offset);
         loggerInputs.aCurrent = angleMotor.getSupplyCurrent();
 
