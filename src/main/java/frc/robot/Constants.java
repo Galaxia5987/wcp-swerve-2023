@@ -60,4 +60,6 @@ public final class Constants {
     public static boolean REAR_RIGHT_DRIVE_INVERTED = false;
     public static boolean REAR_RIGHT_ANGLE_INVERTED = true;
     public static boolean REAR_RIGHT_ANGLE_SENSOR_PHASE = false;
+
+    public static double SMOOTHING_FACTOR = 2;
 }

@@ -41,9 +41,9 @@ public class HolonomicDrive extends CommandBase {
     }
 
     protected ChassisSpeeds calculateVelocities() {
-        double forwardVal = Utils.deadband(forwardLimiter.calculate(forward.getAsDouble()), 0.05);
-        double strafeVal = Utils.deadband(strafeLimiter.calculate(strafe.getAsDouble()), 0.05);
-        double rotationVal = Utils.deadband(rotationLimiter.calculate(rotation.getAsDouble()), 0.05);
+        double forwardVal = smooth(Utils.deadband(forwardLimiter.calculate(forward.getAsDouble()), 0.05));
+        double strafeVal = smooth(Utils.deadband(strafeLimiter.calculate(strafe.getAsDouble()), 0.05));
+        double rotationVal = smooth(Utils.deadband(rotationLimiter.calculate(rotation.getAsDouble()), 0.05));
 
         return new ChassisSpeeds(forwardVal * Constants.MAX_VELOCITY_METERS_PER_SECOND,
                 strafeVal * Constants.MAX_VELOCITY_METERS_PER_SECOND,
@@ -54,5 +54,9 @@ public class HolonomicDrive extends CommandBase {
         ChassisSpeeds speeds = calculateVelocities();
         double rotationVal = adjustController.calculate(IntegratedUtils.angleToTarget(), 0);
         swerveDrive.drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, rotationVal);
+    }
+
+    protected double smooth(double val) {
+        return Math.signum(val) * Math.pow(Math.abs(val), Constants.SMOOTHING_FACTOR);
     }
 }
