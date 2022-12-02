@@ -38,8 +38,14 @@ public final class Constants {
     public static final double MAX_ACCELERATION = MAX_VELOCITY_METERS_PER_SECOND / 2;
     public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
             Math.hypot(DRIVETRAIN_TRACK_WIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
+
     public static final double TARGET_ADJUST_Kp = 0;
     public static final double TARGET_ADJUST_Kf = 0;
+    public static final double KP_XY_CONTROLLER = 0;
+    public static final double KI_XY_CONTROLLER = 0;
+    public static final double KD_XY_CONTROLLER = 0;
+    public static final double KF_XY_CONTROLLER = 0;
+
     public static final double XY_SLEW_RATE_LIMIT = 3.0;
     public static final double ROTATION_SLEW_RATE_LIMIT = 6.0;
     public static boolean FRONT_LEFT_DRIVE_INVERTED = false;
