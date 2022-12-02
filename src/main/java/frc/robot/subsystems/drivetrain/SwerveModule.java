@@ -20,8 +20,8 @@ public class SwerveModule extends LoggedSubsystem {
     private final int offset;
     private final SwerveDrive.Module number;
     private final SwerveModuleLogInputs inputs;
-    private boolean initializedOffset = false;
     private final double[] motionMagicConfigs;
+    private boolean initializedOffset = false;
 
     public SwerveModule(SwerveDrive.Module number, int driveMotorPort, int angleMotorPort, int encoderPort, int offset, boolean driveInverted,
                         boolean angleInverted, boolean angleSensorPhase, double[] motionMagicConfigs) {
