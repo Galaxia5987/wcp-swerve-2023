@@ -32,16 +32,6 @@ public class PathFollowerCommand extends CommandBase {
         rotationController = new PIDFController(0, 0, 0, 0);
 
         Logger.getInstance().recordOutput("Current Path Following Command", trajectory.toString());
-
-        SmartDashboard.putNumber("PathFollowerCommand_" + "xyKp", 1.0);
-        SmartDashboard.putNumber("PathFollowerCommand_" + "xyKi", 0.0);
-        SmartDashboard.putNumber("PathFollowerCommand_" + "xyKd", 0.0);
-        SmartDashboard.putNumber("PathFollowerCommand_" + "xyKf", 0.0);
-
-        SmartDashboard.putNumber("PathFollowerCommand_" + "rotationKp", 1.0);
-        SmartDashboard.putNumber("PathFollowerCommand_" + "rotationKi", 0.0);
-        SmartDashboard.putNumber("PathFollowerCommand_" + "rotationKd", 0.0);
-        SmartDashboard.putNumber("PathFollowerCommand_" + "rotationKf", 0.0);
     }
 
     @Override
