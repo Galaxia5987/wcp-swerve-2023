@@ -3,7 +3,6 @@ package frc.robot.autonomous;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -13,7 +12,7 @@ import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.utils.controllers.PIDFController;
 import frc.robot.utils.valuetuner.WebConstant;
 
-public class PathFollowerCommand extends CommandBase {
+public class FollowPath extends CommandBase {
     protected final WebConstant webKp_xy = WebConstant.of("Autonomous", "kP_xy", Constants.KP_XY_CONTROLLER);
     protected final WebConstant webKi_xy = WebConstant.of("Autonomous", "kI_xy", Constants.KI_XY_CONTROLLER);
     protected final WebConstant webKd_xy = WebConstant.of("Autonomous", "kD_xy", Constants.KD_XY_CONTROLLER);
@@ -31,7 +30,7 @@ public class PathFollowerCommand extends CommandBase {
     private HolonomicDriveController holonomicDriveController;
 
     @SuppressWarnings("ParameterName")
-    public PathFollowerCommand(PathPlannerTrajectory trajectory, boolean firstPath) {
+    public FollowPath(PathPlannerTrajectory trajectory, boolean firstPath) {
         this.trajectory = trajectory;
         xController = new PIDFController(webKp_xy.get(), webKi_xy.get(), webKd_xy.get(), webKf_xy.get());
         yController = new PIDFController(webKp_xy.get(), webKi_xy.get(), webKd_xy.get(), webKf_xy.get());
@@ -79,8 +78,7 @@ public class PathFollowerCommand extends CommandBase {
                 Robot.gyroscope.getAngle().getRadians(), desiredState.holonomicRotation.getRadians());
 
         double omega = rotation * Math.hypot(desiredSpeeds.vxMetersPerSecond, desiredSpeeds.vyMetersPerSecond);
-        var states = swerveDrive.getKinematics().toSwerveModuleStates(new ChassisSpeeds(desiredSpeeds.vxMetersPerSecond, desiredSpeeds.vyMetersPerSecond, omega + rotation));
-        swerveDrive.setStates(states);
+        swerveDrive.drive(desiredSpeeds.vxMetersPerSecond, desiredSpeeds.vyMetersPerSecond, omega + rotation);
     }
 
     @Override

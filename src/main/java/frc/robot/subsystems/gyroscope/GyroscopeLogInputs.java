@@ -5,20 +5,11 @@ import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public class GyroscopeLogInputs implements LoggableInputs {
-    private static GyroscopeLogInputs INSTANCE = null;
-
     public Rotation2d angle = Rotation2d.fromDegrees(0);
     public Rotation2d rawAngle = Rotation2d.fromDegrees(0);
     public Rotation2d zeroAngle = Rotation2d.fromDegrees(0);
 
-    private GyroscopeLogInputs() {
-    }
-
-    public static GyroscopeLogInputs getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new GyroscopeLogInputs();
-        }
-        return INSTANCE;
+    public GyroscopeLogInputs() {
     }
 
     @Override

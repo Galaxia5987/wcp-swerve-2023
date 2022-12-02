@@ -5,21 +5,19 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.SPI;
 import frc.robot.subsystems.LoggedSubsystem;
 
-public class Gyroscope extends LoggedSubsystem {
+public class Gyroscope extends LoggedSubsystem<GyroscopeLogInputs> {
     private final AHRS navx;
-    private final GyroscopeLogInputs inputs;
 
     public Gyroscope() {
-        super(GyroscopeLogInputs.getInstance());
+        super(new GyroscopeLogInputs());
         navx = new AHRS(SPI.Port.kMXP);
-        inputs = GyroscopeLogInputs.getInstance();
-        inputs.zeroAngle = new Rotation2d();
+        loggerInputs.zeroAngle = new Rotation2d();
     }
 
     @Override
     public void updateInputs() {
-        inputs.rawAngle = navx.getRotation2d();
-        inputs.angle = getAngle();
+        loggerInputs.rawAngle = navx.getRotation2d();
+        loggerInputs.angle = getAngle();
     }
 
     @Override
@@ -40,7 +38,7 @@ public class Gyroscope extends LoggedSubsystem {
      * @param angle the angle in -180 to 180 degrees coordinate system.
      */
     public void resetAngle(Rotation2d angle) {
-        inputs.zeroAngle = getRawAngle().minus(angle);
+        loggerInputs.zeroAngle = getRawAngle().minus(angle);
     }
 
     /**
@@ -49,7 +47,7 @@ public class Gyroscope extends LoggedSubsystem {
      * @return the current angle of the robot in respect to the start angle.
      */
     public Rotation2d getAngle() {
-        return getRawAngle().minus(inputs.zeroAngle);
+        return getRawAngle().minus(loggerInputs.zeroAngle);
     }
 
     /**
@@ -58,6 +56,6 @@ public class Gyroscope extends LoggedSubsystem {
      * @return the angle of the robot in respect to the angle of the robot initiation time.
      */
     public Rotation2d getRawAngle() {
-        return inputs.rawAngle;
+        return loggerInputs.rawAngle;
     }
 }

@@ -13,23 +13,21 @@ import frc.robot.utils.motors.PIDTalon;
 
 import static frc.robot.Constants.*;
 
-public class SwerveModule extends LoggedSubsystem {
+public class SwerveModule extends LoggedSubsystem<SwerveModuleLogInputs> {
     private final WPI_TalonFX driveMotor;
     private final PIDTalon angleMotor;
     private final DutyCycleEncoder encoder;
     private final int offset;
     private final SwerveDrive.Module number;
-    private final SwerveModuleLogInputs inputs;
     private final double[] motionMagicConfigs;
     private boolean initializedOffset = false;
 
     public SwerveModule(SwerveDrive.Module number, int driveMotorPort, int angleMotorPort, int encoderPort, int offset, boolean driveInverted,
                         boolean angleInverted, boolean angleSensorPhase, double[] motionMagicConfigs) {
-        super(SwerveModuleLogInputs.getInstance(number.number));
+        super(new SwerveModuleLogInputs());
         this.number = number;
         this.offset = offset;
         this.motionMagicConfigs = motionMagicConfigs;
-        inputs = SwerveModuleLogInputs.getInstance(number.number);
         driveMotor = new WPI_TalonFX(driveMotorPort);
         angleMotor = new PIDTalon(angleMotorPort);
 
@@ -79,14 +77,14 @@ public class SwerveModule extends LoggedSubsystem {
     }
 
     public void set(double speed, Rotation2d angle) {
-        SwerveModuleState optimized = SwerveModuleState.optimize(new SwerveModuleState(speed, angle), inputs.aAngle);
+        SwerveModuleState optimized = SwerveModuleState.optimize(new SwerveModuleState(speed, angle), loggerInputs.aAngle);
         speed = optimized.speedMetersPerSecond;
         angle = optimized.angle;
-        inputs.aSetpoint = angle; // Setpoint angle of the wheel
+        loggerInputs.aSetpoint = angle; // Setpoint angle of the wheel
 
         driveMotor.set(ControlMode.PercentOutput, speed);
 
-        angleMotor.set(ControlMode.MotionMagic, toFalconTicks(inputs.aSetpoint));
+        angleMotor.set(ControlMode.MotionMagic, toFalconTicks(loggerInputs.aSetpoint));
     }
 
     public Rotation2d toWheelAbsoluteAngle(double ticks) {
@@ -102,15 +100,15 @@ public class SwerveModule extends LoggedSubsystem {
     }
 
     public Rotation2d getAngle() {
-        return inputs.aAngle;
+        return loggerInputs.aAngle;
     }
 
     public double getEncoderTicks() {
-        return toFalconTicks(inputs.encoderAngle);
+        return toFalconTicks(loggerInputs.encoderAngle);
     }
 
     public SwerveModuleState getState() {
-        return new SwerveModuleState(inputs.dVelocity, getAngle());
+        return new SwerveModuleState(loggerInputs.dVelocity, getAngle());
     }
 
     public void stop() {
@@ -125,15 +123,15 @@ public class SwerveModule extends LoggedSubsystem {
             encoderRelativeAngle -= TICKS_PER_ROTATION;
         }
 
-        inputs.aPosition = angleMotor.getSelectedSensorPosition();
-        inputs.aAngle = toWheelAbsoluteAngle(inputs.aPosition); // Angle of the wheel
-        inputs.encoderAngle = toWheelAbsoluteAngle(absoluteEncoderToAbsoluteFalcon(encoder.getAbsolutePosition()));
-        inputs.encoderRelativeAngle = toWheelAbsoluteAngle(encoderRelativeAngle);
-        inputs.offsetAngle = toWheelAbsoluteAngle(offset);
-        inputs.aCurrent = angleMotor.getSupplyCurrent();
+        loggerInputs.aPosition = angleMotor.getSelectedSensorPosition();
+        loggerInputs.aAngle = toWheelAbsoluteAngle(loggerInputs.aPosition); // Angle of the wheel
+        loggerInputs.encoderAngle = toWheelAbsoluteAngle(absoluteEncoderToAbsoluteFalcon(encoder.getAbsolutePosition()));
+        loggerInputs.encoderRelativeAngle = toWheelAbsoluteAngle(encoderRelativeAngle);
+        loggerInputs.offsetAngle = toWheelAbsoluteAngle(offset);
+        loggerInputs.aCurrent = angleMotor.getSupplyCurrent();
 
-        inputs.dVelocity = driveMotor.get();
-        inputs.dCurrent = driveMotor.getSupplyCurrent();
+        loggerInputs.dVelocity = driveMotor.get();
+        loggerInputs.dCurrent = driveMotor.getSupplyCurrent();
     }
 
     @Override

@@ -14,7 +14,7 @@ import frc.robot.utils.Utils;
 
 import static frc.robot.Constants.*;
 
-public class SwerveDrive extends LoggedSubsystem {
+public class SwerveDrive extends LoggedSubsystem<SwerveDriveLogInputs> {
     private final SwerveDriveKinematics mKinematics = new SwerveDriveKinematics(
             // Front left
             new Translation2d(DRIVETRAIN_TRACK_WIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
@@ -27,7 +27,6 @@ public class SwerveDrive extends LoggedSubsystem {
     private final SwerveDriveOdometry mOdometry = new SwerveDriveOdometry(mKinematics, new Rotation2d(),
             new Pose2d());
 
-    private final SwerveDriveLogInputs inputs;
     private final SwerveModule mFrontLeft;
     private final SwerveModule mFrontRight;
     private final SwerveModule mRearLeft;
@@ -35,8 +34,7 @@ public class SwerveDrive extends LoggedSubsystem {
     private ChassisSpeeds mChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
     public SwerveDrive() {
-        super(SwerveDriveLogInputs.getInstance());
-        inputs = SwerveDriveLogInputs.getInstance();
+        super(new SwerveDriveLogInputs());
 
         mFrontLeft = new SwerveModule(
                 Module.FL,
@@ -126,12 +124,12 @@ public class SwerveDrive extends LoggedSubsystem {
 
     @Override
     public void updateInputs() {
-        inputs.speeds = Utils.chassisSpeedsToArray(mKinematics.toChassisSpeeds(
+        loggerInputs.speeds = Utils.chassisSpeedsToArray(mKinematics.toChassisSpeeds(
                 mFrontLeft.getState(),
                 mFrontRight.getState(),
                 mRearLeft.getState(),
                 mRearRight.getState()));
-        inputs.pose = Utils.pose2dToArray(getPose());
+        loggerInputs.pose = Utils.pose2dToArray(getPose());
     }
 
     @Override
@@ -140,7 +138,7 @@ public class SwerveDrive extends LoggedSubsystem {
     }
 
     public ChassisSpeeds getSpeeds() {
-        return Utils.arrayToChassisSpeeds(inputs.speeds);
+        return Utils.arrayToChassisSpeeds(loggerInputs.speeds);
     }
 
     public void stop() {

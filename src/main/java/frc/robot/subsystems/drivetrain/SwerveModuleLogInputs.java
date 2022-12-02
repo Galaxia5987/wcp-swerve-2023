@@ -5,10 +5,6 @@ import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public class SwerveModuleLogInputs implements LoggableInputs {
-    private static final SwerveModuleLogInputs[] INSTANCES = new SwerveModuleLogInputs[]{
-            null, null, null, null
-    };
-
     public Rotation2d aAngle = Rotation2d.fromDegrees(0);
     public Rotation2d aSetpoint = Rotation2d.fromDegrees(0);
     public Rotation2d encoderAngle = Rotation2d.fromDegrees(0);
@@ -20,14 +16,7 @@ public class SwerveModuleLogInputs implements LoggableInputs {
     public double dVelocity = 0;
     public double dCurrent = 0;
 
-    private SwerveModuleLogInputs() {
-    }
-
-    public static SwerveModuleLogInputs getInstance(int number) {
-        if (INSTANCES[number] == null) {
-            INSTANCES[number] = new SwerveModuleLogInputs();
-        }
-        return INSTANCES[number];
+    public SwerveModuleLogInputs() {
     }
 
     @Override
