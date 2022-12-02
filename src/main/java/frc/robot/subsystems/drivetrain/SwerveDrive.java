@@ -33,6 +33,8 @@ public class SwerveDrive extends LoggedSubsystem<SwerveDriveLogInputs> {
     private final SwerveModule mRearRight;
     private ChassisSpeeds mChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
+    private boolean fieldOriented = true;
+
     public SwerveDrive() {
         super(new SwerveDriveLogInputs());
 
@@ -111,15 +113,26 @@ public class SwerveDrive extends LoggedSubsystem<SwerveDriveLogInputs> {
             return;
         }
 
-        mChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+        mChassisSpeeds = fieldOriented ? ChassisSpeeds.fromFieldRelativeSpeeds(
                 vx,
                 vy,
                 theta,
-                Robot.gyroscope.getAngle());
+                Robot.gyroscope.getAngle()) : new ChassisSpeeds(vx, vy, theta);
+    }
+
+    public void setFieldOriented(boolean fieldOriented) {
+        this.fieldOriented = fieldOriented;
     }
 
     public void setStates(SwerveModuleState[] states) {
         mChassisSpeeds = mKinematics.toChassisSpeeds(states);
+    }
+
+    public void lock() {
+        mFrontLeft.set(0, Rotation2d.fromDegrees(45));
+        mFrontRight.set(0, Rotation2d.fromDegrees(135));
+        mRearLeft.set(0, Rotation2d.fromDegrees(315));
+        mRearRight.set(0, Rotation2d.fromDegrees(225));
     }
 
     @Override
