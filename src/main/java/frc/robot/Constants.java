@@ -62,4 +62,6 @@ public final class Constants {
     public static boolean REAR_RIGHT_ANGLE_SENSOR_PHASE = false;
 
     public static double SMOOTHING_FACTOR = 2;
+
+    public static double TORNADO_SPIN_DISTANCE = DRIVETRAIN_WHEELBASE_METERS / 2;
 }

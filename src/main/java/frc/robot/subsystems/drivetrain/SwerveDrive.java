@@ -12,6 +12,8 @@ import frc.robot.Robot;
 import frc.robot.subsystems.LoggedSubsystem;
 import frc.robot.utils.Utils;
 
+import java.util.Arrays;
+
 import static frc.robot.Constants.*;
 
 public class SwerveDrive extends LoggedSubsystem<SwerveDriveLogInputs> {
@@ -31,7 +33,7 @@ public class SwerveDrive extends LoggedSubsystem<SwerveDriveLogInputs> {
     private final SwerveModule mFrontRight;
     private final SwerveModule mRearLeft;
     private final SwerveModule mRearRight;
-    private ChassisSpeeds mChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
+    private SwerveModuleState[] swerveModuleStates = new SwerveModuleState[4];
 
     private boolean fieldOriented = true;
 
@@ -96,13 +98,13 @@ public class SwerveDrive extends LoggedSubsystem<SwerveDriveLogInputs> {
         return mOdometry.getPoseMeters();
     }
 
-    public void drive(ChassisSpeeds chassisSpeeds) {
+    public void drive(ChassisSpeeds chassisSpeeds, Translation2d centerOfRotation) {
         drive(chassisSpeeds.vxMetersPerSecond,
                 chassisSpeeds.vyMetersPerSecond,
-                chassisSpeeds.omegaRadiansPerSecond);
+                chassisSpeeds.omegaRadiansPerSecond, centerOfRotation);
     }
 
-    public void drive(double vx, double vy, double theta) {
+    public void drive(double vx, double vy, double theta, Translation2d centerOfRotation) {
         if (Utils.epsilonEquals(vx, 0, 0.05) &&
                 Utils.epsilonEquals(vy, 0, 0.05) &&
                 Utils.epsilonEquals(theta, 0, 0.05)) {
@@ -113,11 +115,20 @@ public class SwerveDrive extends LoggedSubsystem<SwerveDriveLogInputs> {
             return;
         }
 
-        mChassisSpeeds = fieldOriented ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                vx,
-                vy,
-                theta,
-                Robot.gyroscope.getAngle()) : new ChassisSpeeds(vx, vy, theta);
+        swerveModuleStates = mKinematics.toSwerveModuleStates(fieldOriented ? ChassisSpeeds.fromFieldRelativeSpeeds(
+                        vx,
+                        vy,
+                        theta,
+                        Robot.gyroscope.getAngle()) : new ChassisSpeeds(vx, vy, theta),
+                centerOfRotation);
+    }
+
+    public void drive(double vx, double vy, double theta) {
+        drive(vx, vy, theta, new Translation2d());
+    }
+
+    public void drive(ChassisSpeeds speeds) {
+        drive(speeds, new Translation2d());
     }
 
     public void setFieldOriented(boolean fieldOriented) {
@@ -125,7 +136,7 @@ public class SwerveDrive extends LoggedSubsystem<SwerveDriveLogInputs> {
     }
 
     public void setStates(SwerveModuleState[] states) {
-        mChassisSpeeds = mKinematics.toChassisSpeeds(states);
+        swerveModuleStates = Arrays.copyOf(states, states.length);
     }
 
     public void lock() {
@@ -164,18 +175,17 @@ public class SwerveDrive extends LoggedSubsystem<SwerveDriveLogInputs> {
     @Override
     public void periodic() {
         updateOdometry();
-        SwerveModuleState[] states = mKinematics.toSwerveModuleStates(mChassisSpeeds);
 
-        SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, MAX_VELOCITY_METERS_PER_SECOND);
 
-        mFrontLeft.set(states[Module.FL.number].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND,
-                states[Module.FL.number].angle);
-        mFrontRight.set(states[Module.FR.number].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND,
-                states[Module.FR.number].angle);
-        mRearLeft.set(states[Module.RL.number].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND,
-                states[Module.RL.number].angle);
-        mRearRight.set(states[Module.RR.number].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND,
-                states[Module.RR.number].angle);
+        mFrontLeft.set(swerveModuleStates[Module.FL.number].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND,
+                swerveModuleStates[Module.FL.number].angle);
+        mFrontRight.set(swerveModuleStates[Module.FR.number].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND,
+                swerveModuleStates[Module.FR.number].angle);
+        mRearLeft.set(swerveModuleStates[Module.RL.number].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND,
+                swerveModuleStates[Module.RL.number].angle);
+        mRearRight.set(swerveModuleStates[Module.RR.number].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND,
+                swerveModuleStates[Module.RR.number].angle);
 
         if (SmartDashboard.getBoolean("Zero Swerve", false)) {
             SmartDashboard.putString("Zero Positions", "{" +
