@@ -18,22 +18,13 @@ public class DriveJoysticks extends HolonomicDrive {
     public void execute() {
         ChassisSpeeds speeds = calculateVelocities();
         int pov = leftJoystick.getPOV();
-        switch (pov) {
-            case 0:
-                swerveDrive.drive(speeds, new Translation2d(Constants.TORNADO_SPIN_DISTANCE, 0));
-                break;
-            case 90:
-                swerveDrive.drive(speeds, new Translation2d(0, -Constants.TORNADO_SPIN_DISTANCE));
-                break;
-            case 180:
-                swerveDrive.drive(speeds, new Translation2d(-Constants.TORNADO_SPIN_DISTANCE, 0));
-                break;
-            case 270:
-                swerveDrive.drive(speeds, new Translation2d(0, Constants.TORNADO_SPIN_DISTANCE));
-                break;
-            default:
-                super.execute();
-                break;
+        if (pov >= 0) {
+            double angle = Math.toRadians((360 - pov) % 360);
+            swerveDrive.drive(speeds, new Translation2d(
+                    Math.cos(angle) * Constants.TORNADO_SPIN_DISTANCE,
+                    Math.sin(angle) * Constants.TORNADO_SPIN_DISTANCE));
+        } else {
+            super.execute();
         }
     }
 }
