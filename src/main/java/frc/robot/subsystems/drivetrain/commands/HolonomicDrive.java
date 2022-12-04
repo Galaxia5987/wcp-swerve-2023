@@ -56,9 +56,9 @@ public class HolonomicDrive extends CommandBase {
     }
 
     protected ChassisSpeeds calculateVelocities() {
-        double forwardVal = smooth(Utils.deadband(forwardLimiter.calculate(forward.getAsDouble()), 0.05));
-        double strafeVal = smooth(Utils.deadband(strafeLimiter.calculate(strafe.getAsDouble()), 0.05));
-        double rotationVal = smooth(Utils.deadband(rotationLimiter.calculate(rotation.getAsDouble()), 0.05));
+        double forwardVal = Utils.deadband(smooth(forwardLimiter.calculate(forward.getAsDouble())), 0.05);
+        double strafeVal = Utils.deadband(smooth(strafeLimiter.calculate(strafe.getAsDouble())), 0.05);
+        double rotationVal = Utils.deadband(smooth(rotationLimiter.calculate(rotation.getAsDouble())), 0.05);
 
         return new ChassisSpeeds(forwardVal * Constants.MAX_VELOCITY_METERS_PER_SECOND,
                 strafeVal * Constants.MAX_VELOCITY_METERS_PER_SECOND,

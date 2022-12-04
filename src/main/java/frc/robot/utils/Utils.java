@@ -16,18 +16,7 @@ public class Utils {
     public static double deadband(double val, double threshold) {
         if (Math.abs(val) < threshold)
             return 0;
-        return val;
-    }
-
-    /**
-     * @param input     the joystick input
-     * @param threshold the joystick deadband threshold
-     * @return the updated value after the deadband
-     */
-    public static double rotationalDeadband(double input, double threshold) {
-        if (Math.abs(input) < threshold)
-            return 0;
-        return (input - (Math.signum(input) * threshold)) / (1 - threshold);
+        return (val - Math.signum(val) * threshold) / (1 - threshold);
     }
 
     public static boolean epsilonEquals(double a, double b) {
