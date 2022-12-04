@@ -34,11 +34,7 @@ public class RobotContainer {
 
     private void configureDefaultCommands() {
 //        Robot.swerveSubsystem.setDefaultCommand(new DriveJoysticks(leftJoystick, rightJoystick, rightJoystick::getTrigger));
-        Robot.swerveSubsystem.setDefaultCommand(new DriveXboxController(
-                xboxController,
-                xboxController::getLeftBumper,
-                xboxController::getAButton,
-                xboxController::getYButton));
+        Robot.swerveSubsystem.setDefaultCommand(new DriveXboxController(xboxController));
     }
 
     private void configureButtonBindings() {
