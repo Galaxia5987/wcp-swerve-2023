@@ -4,6 +4,7 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.SPI;
 import frc.robot.subsystems.LoggedSubsystem;
+import frc.robot.utils.math.AngleUtil;
 
 public class Gyroscope extends LoggedSubsystem<GyroscopeLogInputs> {
     private final AHRS navx;
@@ -57,5 +58,9 @@ public class Gyroscope extends LoggedSubsystem<GyroscopeLogInputs> {
      */
     public Rotation2d getRawAngle() {
         return loggerInputs.rawAngle;
+    }
+
+    public AngleUtil.Angle getAngleObject() {
+        return new AngleUtil.Angle(AngleUtil.UP_COUNTER_CLOCKWISE, getAngle().getDegrees());
     }
 }
