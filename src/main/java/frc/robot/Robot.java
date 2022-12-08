@@ -53,14 +53,14 @@ public class Robot extends LoggedRobot {
 
         SmartDashboard.putBoolean("Zero Swerve", false);
         SmartDashboard.putBoolean("Swerve Tune Motion Magic", false);
-        SmartDashboard.putNumber("PathFollowerCommand_" + "xyKp", 1.0);
-        SmartDashboard.putNumber("PathFollowerCommand_" + "xyKi", 0.0);
-        SmartDashboard.putNumber("PathFollowerCommand_" + "xyKd", 0.0);
-        SmartDashboard.putNumber("PathFollowerCommand_" + "xyKf", 0.0);
-        SmartDashboard.putNumber("PathFollowerCommand_" + "rotationKp", 1.0);
-        SmartDashboard.putNumber("PathFollowerCommand_" + "rotationKi", 0.0);
-        SmartDashboard.putNumber("PathFollowerCommand_" + "rotationKd", 0.0);
-        SmartDashboard.putNumber("PathFollowerCommand_" + "rotationKf", 0.0);
+        SmartDashboard.putNumber("PathFollowerCommand_xyKp", Constants.AUTO_XY_Kp);
+        SmartDashboard.putNumber("PathFollowerCommand_xyKi", Constants.AUTO_XY_Ki);
+        SmartDashboard.putNumber("PathFollowerCommand_xyKd", Constants.AUTO_XY_Kd);
+        SmartDashboard.putNumber("PathFollowerCommand_xyKf", Constants.AUTO_XY_Kf);
+        SmartDashboard.putNumber("PathFollowerCommand_rotationKp", Constants.AUTO_ROTATION_Kp);
+        SmartDashboard.putNumber("PathFollowerCommand_rotationKi", Constants.AUTO_ROTATION_Ki);
+        SmartDashboard.putNumber("PathFollowerCommand_rotationKd", Constants.AUTO_ROTATION_Kd);
+        SmartDashboard.putNumber("PathFollowerCommand_rotationKf", Constants.AUTO_ROTATION_Kf);
     }
 
     /**

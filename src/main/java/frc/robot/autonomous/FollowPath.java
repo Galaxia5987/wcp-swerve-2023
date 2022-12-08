@@ -3,12 +3,15 @@ package frc.robot.autonomous;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
+import frc.robot.utils.Utils;
 import frc.robot.utils.controllers.PIDFController;
 import frc.robot.utils.valuetuner.WebConstant;
 
@@ -52,9 +55,18 @@ public class FollowPath extends CommandBase {
     public void initialize() {
         timer.reset();
         timer.start();
-        xController.setPIDF(webKp_xy.get(), webKi_xy.get(), webKd_xy.get(), webKf_xy.get());
-        yController.setPIDF(webKp_xy.get(), webKi_xy.get(), webKd_xy.get(), webKf_xy.get());
-        thetaController.setPIDF(webKp_rotation.get(), 0, 0, webKf_rotation.get());
+        xController.setPIDF(SmartDashboard.getNumber("PathFollowerCommand_xyKp", Constants.AUTO_XY_Kp),
+                SmartDashboard.getNumber("PathFollowerCommand_xyKi", Constants.AUTO_XY_Ki),
+                SmartDashboard.getNumber("PathFollowerCommand_xyKd", Constants.AUTO_XY_Kd),
+                SmartDashboard.getNumber("PathFollowerCommand_xyKf", Constants.AUTO_XY_Kf));
+        yController.setPIDF(SmartDashboard.getNumber("PathFollowerCommand_xyKp", Constants.AUTO_XY_Kp),
+                SmartDashboard.getNumber("PathFollowerCommand_xyKi", Constants.AUTO_XY_Ki),
+                SmartDashboard.getNumber("PathFollowerCommand_xyKd", Constants.AUTO_XY_Kd),
+                SmartDashboard.getNumber("PathFollowerCommand_xyKf", Constants.AUTO_XY_Kf));
+        thetaController.setPIDF(SmartDashboard.getNumber("PathFollowerCommand_rotationKp", 1.0),
+                SmartDashboard.getNumber("PathFollowerCommand_rotationKi", 0.0),
+                SmartDashboard.getNumber("PathFollowerCommand_rotationKd", 0.0),
+                SmartDashboard.getNumber("PathFollowerCommand_rotationKf", 0.0));
         holonomicDriveController = new HolonomicDriveController(
                 xController, yController,
                 new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(0, 0)
@@ -78,7 +90,8 @@ public class FollowPath extends CommandBase {
                 Robot.gyroscope.getAngle().getRadians(), desiredState.holonomicRotation.getRadians());
 
         double omega = rotation * Math.hypot(desiredSpeeds.vxMetersPerSecond, desiredSpeeds.vyMetersPerSecond);
-        swerveDrive.drive(desiredSpeeds.vxMetersPerSecond, desiredSpeeds.vyMetersPerSecond, omega + rotation);
+        ChassisSpeeds speeds = Utils.deadbandSpeeds(new ChassisSpeeds(desiredSpeeds.vxMetersPerSecond, desiredSpeeds.vyMetersPerSecond, omega + rotation), 0.05);
+        swerveDrive.drive(speeds);
     }
 
     @Override

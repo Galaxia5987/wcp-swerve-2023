@@ -10,10 +10,10 @@ public final class Constants {
 
     // Swerve
     public static final double TICKS_PER_ROTATION = 2048;
-    public static final int[] OFFSETS = {20253, 6501, 16024, 1682};
+    public static final int[] OFFSETS = {20211, 6489, 16034, 1728};
 
-    public static final double DRIVETRAIN_TRACK_WIDTH_METERS = 0.5224;
-    public static final double DRIVETRAIN_WHEELBASE_METERS = 0.6624;
+    public static final double DRIVETRAIN_TRACK_WIDTH_METERS = 0.594;
+    public static final double DRIVETRAIN_WHEELBASE_METERS = 0.594;
 
     public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR_ID = 7;
     public static final int FRONT_LEFT_MODULE_STEER_MOTOR_ID = 8;
@@ -48,20 +48,29 @@ public final class Constants {
 
     public static final double XY_SLEW_RATE_LIMIT = 3.0;
     public static final double ROTATION_SLEW_RATE_LIMIT = 6.0;
-    public static boolean FRONT_LEFT_DRIVE_INVERTED = false;
+    public static boolean FRONT_LEFT_DRIVE_INVERTED = true;
     public static boolean FRONT_LEFT_ANGLE_INVERTED = true;
     public static boolean FRONT_LEFT_ANGLE_SENSOR_PHASE = false;
-    public static boolean FRONT_RIGHT_DRIVE_INVERTED = false;
+    public static boolean FRONT_RIGHT_DRIVE_INVERTED = true;
     public static boolean FRONT_RIGHT_ANGLE_INVERTED = true;
     public static boolean FRONT_RIGHT_ANGLE_SENSOR_PHASE = false;
-    public static boolean REAR_LEFT_DRIVE_INVERTED = false;
+    public static boolean REAR_LEFT_DRIVE_INVERTED = true;
     public static boolean REAR_LEFT_ANGLE_INVERTED = true;
     public static boolean REAR_LEFT_ANGLE_SENSOR_PHASE = false;
-    public static boolean REAR_RIGHT_DRIVE_INVERTED = false;
+    public static boolean REAR_RIGHT_DRIVE_INVERTED = true;
     public static boolean REAR_RIGHT_ANGLE_INVERTED = true;
     public static boolean REAR_RIGHT_ANGLE_SENSOR_PHASE = false;
 
     public static double SMOOTHING_FACTOR = 2;
 
     public static double TORNADO_SPIN_DISTANCE = 0.4;
+
+    public static double AUTO_XY_Kp = 0.8;
+    public static double AUTO_XY_Ki = 0.0;
+    public static double AUTO_XY_Kd = 0.0;
+    public static double AUTO_XY_Kf = 0.125;
+    public static double AUTO_ROTATION_Kp = 1;
+    public static double AUTO_ROTATION_Ki = 0.0;
+    public static double AUTO_ROTATION_Kd = 0.0;
+    public static double AUTO_ROTATION_Kf = 0.0;
 }

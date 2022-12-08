@@ -4,9 +4,12 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import edu.wpi.first.hal.simulation.DriverStationDataJNI;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.LoggedSubsystem;
 import frc.robot.utils.motors.PIDTalon;
@@ -124,7 +127,7 @@ public class SwerveModule extends LoggedSubsystem<SwerveModuleLogInputs> {
         loggerInputs.offsetAngle = toWheelAbsoluteAngle(offset);
         loggerInputs.aCurrent = angleMotor.getSupplyCurrent();
 
-        loggerInputs.dVelocity = driveMotor.getMotorOutputPercent(); // TODO: Implement meters per second
+        loggerInputs.dVelocity = driveMotor.getMotorOutputVoltage() / RobotController.getBatteryVoltage() * MAX_VELOCITY_METERS_PER_SECOND;
         loggerInputs.dCurrent = driveMotor.getSupplyCurrent();
     }
 
