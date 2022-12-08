@@ -24,7 +24,6 @@ import org.littletonrobotics.junction.io.LogSocketServer;
  * project.
  */
 public class Robot extends LoggedRobot {
-    // TODO: Null pointer exception in gyro
     public static final Gyroscope gyroscope = new Gyroscope();
     public static final SwerveDrive swerveSubsystem = new SwerveDrive();
 

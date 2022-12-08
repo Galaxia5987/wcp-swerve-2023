@@ -3,7 +3,7 @@ package frc.robot.subsystems.drivetrain;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -14,7 +14,7 @@ import frc.robot.utils.motors.PIDTalon;
 import static frc.robot.Constants.*;
 
 public class SwerveModule extends LoggedSubsystem<SwerveModuleLogInputs> {
-    private final WPI_TalonFX driveMotor;
+    private final TalonFX driveMotor;
     private final PIDTalon angleMotor;
     private final DutyCycleEncoder encoder;
     private final int offset;
@@ -28,7 +28,7 @@ public class SwerveModule extends LoggedSubsystem<SwerveModuleLogInputs> {
         this.number = number;
         this.offset = offset;
         this.motionMagicConfigs = motionMagicConfigs;
-        driveMotor = new WPI_TalonFX(driveMotorPort);
+        driveMotor = new TalonFX(driveMotorPort);
         angleMotor = new PIDTalon(angleMotorPort);
 
         driveMotor.configFactoryDefault();
@@ -112,8 +112,8 @@ public class SwerveModule extends LoggedSubsystem<SwerveModuleLogInputs> {
     }
 
     public void stop() {
-        angleMotor.stopMotor();
-        driveMotor.stopMotor();
+        angleMotor.neutralOutput();
+        driveMotor.neutralOutput();
     }
 
     @Override
@@ -124,7 +124,7 @@ public class SwerveModule extends LoggedSubsystem<SwerveModuleLogInputs> {
         loggerInputs.offsetAngle = toWheelAbsoluteAngle(offset);
         loggerInputs.aCurrent = angleMotor.getSupplyCurrent();
 
-        loggerInputs.dVelocity = driveMotor.get();
+        loggerInputs.dVelocity = driveMotor.getMotorOutputPercent(); // TODO: Implement meters per second
         loggerInputs.dCurrent = driveMotor.getSupplyCurrent();
     }
 
