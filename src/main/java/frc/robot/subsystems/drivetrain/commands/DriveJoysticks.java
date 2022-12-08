@@ -11,8 +11,8 @@ public class DriveJoysticks extends HolonomicDrive {
     private final Joystick leftJoystick;
 
     public DriveJoysticks(Joystick leftJoystick, Joystick rightJoystick) {
-        super(() -> -leftJoystick.getY(), () -> -leftJoystick.getX(), rightJoystick::getX,
-                rightJoystick::getTrigger, () -> rightJoystick.getRawButton(5), leftJoystick::getTrigger);
+        super(leftJoystick::getY, leftJoystick::getX, rightJoystick::getX,
+                rightJoystick::getTrigger, () -> rightJoystick.getRawButton(3), leftJoystick::getTrigger);
         this.leftJoystick = leftJoystick;
     }
 

@@ -10,7 +10,7 @@ public final class Constants {
 
     // Swerve
     public static final double TICKS_PER_ROTATION = 2048;
-    public static final int[] OFFSETS = {20091, 6542, 15910, 1685};
+    public static final int[] OFFSETS = {20253, 6501, 16024, 1682};
 
     public static final double DRIVETRAIN_TRACK_WIDTH_METERS = 0.5224;
     public static final double DRIVETRAIN_WHEELBASE_METERS = 0.6624;
@@ -63,5 +63,5 @@ public final class Constants {
 
     public static double SMOOTHING_FACTOR = 2;
 
-    public static double TORNADO_SPIN_DISTANCE = DRIVETRAIN_WHEELBASE_METERS / 2;
+    public static double TORNADO_SPIN_DISTANCE = 0.4;
 }

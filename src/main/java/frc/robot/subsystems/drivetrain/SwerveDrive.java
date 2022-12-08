@@ -33,7 +33,12 @@ public class SwerveDrive extends LoggedSubsystem<SwerveDriveLogInputs> {
     private final SwerveModule mFrontRight;
     private final SwerveModule mRearLeft;
     private final SwerveModule mRearRight;
-    private SwerveModuleState[] swerveModuleStates = new SwerveModuleState[4];
+    private SwerveModuleState[] swerveModuleStates = new SwerveModuleState[] {
+            new SwerveModuleState(),
+            new SwerveModuleState(),
+            new SwerveModuleState(),
+            new SwerveModuleState()
+    };
 
     private boolean fieldOriented = true;
 
