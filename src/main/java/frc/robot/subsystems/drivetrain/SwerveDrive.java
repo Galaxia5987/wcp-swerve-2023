@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.subsystems.LoggedSubsystem;
 import frc.robot.utils.Utils;
-import frc.robot.utils.math.SwerveSpeedFilter;
 
 import java.util.Arrays;
 
@@ -29,7 +28,6 @@ public class SwerveDrive extends LoggedSubsystem<SwerveDriveLogInputs> {
             new Translation2d(-DRIVETRAIN_TRACK_WIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0));
     private final SwerveDriveOdometry mOdometry = new SwerveDriveOdometry(mKinematics, new Rotation2d(),
             new Pose2d());
-    private final SwerveSpeedFilter filter = new SwerveSpeedFilter(0.2, 0.8);
 
     private final SwerveModule mFrontLeft;
     private final SwerveModule mFrontRight;
@@ -112,7 +110,7 @@ public class SwerveDrive extends LoggedSubsystem<SwerveDriveLogInputs> {
     }
 
     public void drive(double vx, double vy, double theta, Translation2d centerOfRotation) {
-        loggerInputs.speedsSetpoint = new double[]{vx, vy, theta};
+        loggerInputs.speeds = new double[]{vx, vy, theta};
 
         if (Utils.epsilonEquals(vx, 0, 0.05) &&
                 Utils.epsilonEquals(vy, 0, 0.05) &&
@@ -157,14 +155,6 @@ public class SwerveDrive extends LoggedSubsystem<SwerveDriveLogInputs> {
 
     @Override
     public void updateInputs() {
-        ChassisSpeeds currentSpeeds = mKinematics.toChassisSpeeds(
-                mFrontLeft.getState(),
-                mFrontRight.getState(),
-                mRearLeft.getState(),
-                mRearRight.getState());
-        loggerInputs.speeds = Utils.chassisSpeedsToArray(filter.calculate(
-                currentSpeeds, Utils.arrayToChassisSpeeds(loggerInputs.speedsSetpoint)
-        ));
         loggerInputs.pose = Utils.pose2dToArray(getPose());
     }
 
@@ -201,10 +191,10 @@ public class SwerveDrive extends LoggedSubsystem<SwerveDriveLogInputs> {
 
         if (SmartDashboard.getBoolean("Zero Swerve", false)) {
             SmartDashboard.putString("Zero Positions", "{" +
-                    mFrontLeft.getEncoderTicks() + ", " +
-                    mFrontRight.getEncoderTicks() + ", " +
-                    mRearLeft.getEncoderTicks() + ", " +
-                    mRearRight.getEncoderTicks() + "}");
+                    (int) (mFrontLeft.getEncoderTicks()) + ", " +
+                    (int) mFrontRight.getEncoderTicks() + ", " +
+                    (int) (mRearLeft.getEncoderTicks()) + ", " +
+                    (int) mRearRight.getEncoderTicks() + "}");
         }
     }
 
