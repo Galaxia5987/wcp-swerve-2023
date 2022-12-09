@@ -10,7 +10,7 @@ public final class Constants {
 
     // Swerve
     public static final double TICKS_PER_ROTATION = 2048;
-    public static final int[] OFFSETS = {20211, 6489, 16034, 1728};
+    public static final int[] OFFSETS = {20144, 6450, 16025, 1737};
 
     public static final double DRIVETRAIN_TRACK_WIDTH_METERS = 0.594;
     public static final double DRIVETRAIN_WHEELBASE_METERS = 0.594;
@@ -28,13 +28,13 @@ public final class Constants {
     public static final double WHEEL_DIAMETER = 0.1;
     // kP, kI, kD, kF, sCurveStrength, cruiseVelocity, acceleration, allowableError,
     // maxIntegralAccum, peakOutput
-    public static final double[] FRONT_LEFT_MOTION_MAGIC_CONFIGS = {1.2, 0, 0, 0.2, 1, 21288, 28000, 10, 5, 1};
-    public static final double[] FRONT_RIGHT_MOTION_MAGIC_CONFIGS = {1.2, 0, 0, 0.2, 1, 21288, 28000, 10, 5, 1};
-    public static final double[] REAR_LEFT_MOTION_MAGIC_CONFIGS = {1.2, 0, 0, 0.2, 1, 21288, 28000, 10, 5, 1};
-    public static final double[] REAR_RIGHT_MOTION_MAGIC_CONFIGS = {1.2, 0, 0, 0.2, 1, 21288, 28000, 10, 5, 1};
+    public static final double[] FRONT_LEFT_MOTION_MAGIC_CONFIGS = {1.2, 0, 0, 0.2, 1, 21288, 25000, 10, 5, 1};
+    public static final double[] FRONT_RIGHT_MOTION_MAGIC_CONFIGS = {1.2, 0, 0, 0.2, 1, 21288, 25000, 10, 5, 1};
+    public static final double[] REAR_LEFT_MOTION_MAGIC_CONFIGS = {1.2, 0, 0, 0.2, 1, 21288, 25000, 10, 5, 1};
+    public static final double[] REAR_RIGHT_MOTION_MAGIC_CONFIGS = {1.2, 0, 0, 0.2, 1, 21288, 25000, 10, 5, 1};
     public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
             DRIVE_REDUCTION *
-            WHEEL_DIAMETER * Math.PI;
+            WHEEL_DIAMETER * Math.PI + 0.2;
     public static final double MAX_ACCELERATION = MAX_VELOCITY_METERS_PER_SECOND / 2;
     public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
             Math.hypot(DRIVETRAIN_TRACK_WIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
@@ -65,10 +65,10 @@ public final class Constants {
 
     public static double TORNADO_SPIN_DISTANCE = 0.4;
 
-    public static double AUTO_XY_Kp = 0.8;
+    public static double AUTO_XY_Kp = 0.6;
     public static double AUTO_XY_Ki = 0.0;
     public static double AUTO_XY_Kd = 0.0;
-    public static double AUTO_XY_Kf = 0.125;
+    public static double AUTO_XY_Kf = 0;
     public static double AUTO_ROTATION_Kp = 1;
     public static double AUTO_ROTATION_Ki = 0.0;
     public static double AUTO_ROTATION_Kd = 0.0;
