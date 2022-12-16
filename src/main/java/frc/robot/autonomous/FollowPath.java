@@ -13,21 +13,14 @@ import frc.robot.Robot;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.utils.Utils;
 import frc.robot.utils.controllers.PIDFController;
-import frc.robot.utils.valuetuner.WebConstant;
 
 public class FollowPath extends CommandBase {
-    protected final WebConstant webKp_xy = WebConstant.of("Autonomous", "kP_xy", Constants.KP_XY_CONTROLLER);
-    protected final WebConstant webKi_xy = WebConstant.of("Autonomous", "kI_xy", Constants.KI_XY_CONTROLLER);
-    protected final WebConstant webKd_xy = WebConstant.of("Autonomous", "kD_xy", Constants.KD_XY_CONTROLLER);
-    protected final WebConstant webKf_xy = WebConstant.of("Autonomous", "kF_xy", Constants.KF_XY_CONTROLLER);
-    protected final WebConstant webKp_rotation = WebConstant.of("Autonomous", "kP_rotation", Constants.TARGET_ADJUST_Kp);
-    protected final WebConstant webKf_rotation = WebConstant.of("Autonomous", "kF_rotation", Constants.TARGET_ADJUST_Kf);
     private final Timer timer = new Timer();
     private final SwerveDrive swerveDrive = Robot.swerveSubsystem;
     private final PathPlannerTrajectory trajectory;
     private final PIDFController xController;
     private final PIDFController yController;
-    private final PIDFController thetaController = new PIDFController(Constants.TARGET_ADJUST_Kp, 0, 0, Constants.TARGET_ADJUST_Kf) {{
+    private final PIDFController thetaController = new PIDFController(Constants.AUTO_ROTATION_Kp, Constants.AUTO_ROTATION_Ki, Constants.AUTO_ROTATION_Kd, Constants.AUTO_ROTATION_Kf) {{
         enableContinuousInput(-Math.PI, Math.PI);
     }};
     private HolonomicDriveController holonomicDriveController;
@@ -35,8 +28,8 @@ public class FollowPath extends CommandBase {
     @SuppressWarnings("ParameterName")
     public FollowPath(PathPlannerTrajectory trajectory, boolean firstPath) {
         this.trajectory = trajectory;
-        xController = new PIDFController(webKp_xy.get(), webKi_xy.get(), webKd_xy.get(), webKf_xy.get());
-        yController = new PIDFController(webKp_xy.get(), webKi_xy.get(), webKd_xy.get(), webKf_xy.get());
+        xController = new PIDFController(Constants.AUTO_XY_Kp, Constants.AUTO_XY_Ki, Constants.AUTO_XY_Kd, Constants.AUTO_XY_Kf);
+        yController = new PIDFController(Constants.AUTO_ROTATION_Kp, Constants.AUTO_ROTATION_Ki, Constants.AUTO_ROTATION_Kd, Constants.AUTO_ROTATION_Kf);
 
         holonomicDriveController = new HolonomicDriveController(
                 xController,
