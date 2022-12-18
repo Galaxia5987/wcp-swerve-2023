@@ -191,9 +191,9 @@ public class SwerveDrive extends LoggedSubsystem<SwerveDriveLogInputs> {
 
         if (SmartDashboard.getBoolean("Zero Swerve", false)) {
             SmartDashboard.putString("Zero Positions", "{" +
-                    (int) (mFrontLeft.getEncoderTicks()) + ", " +
+                    (int) mFrontLeft.getEncoderTicks() + ", " +
                     (int) mFrontRight.getEncoderTicks() + ", " +
-                    (int) (mRearLeft.getEncoderTicks()) + ", " +
+                    (int) mRearLeft.getEncoderTicks() + ", " +
                     (int) mRearRight.getEncoderTicks() + "}");
         }
     }

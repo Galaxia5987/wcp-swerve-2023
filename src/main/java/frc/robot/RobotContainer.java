@@ -35,8 +35,8 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-//        Robot.swerveSubsystem.setDefaultCommand(new DriveJoysticks(leftJoystick, rightJoystick));
-        Robot.swerveSubsystem.setDefaultCommand(new DriveXboxController(xboxController));
+        Robot.swerveSubsystem.setDefaultCommand(new DriveJoysticks(leftJoystick, rightJoystick));
+//        Robot.swerveSubsystem.setDefaultCommand(new DriveXboxController(xboxController));
     }
 
     private void configureButtonBindings() {
