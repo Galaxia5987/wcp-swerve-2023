@@ -8,12 +8,11 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.autonomous.FollowPath;
 import frc.robot.subsystems.drivetrain.commands.DriveJoysticks;
-import frc.robot.subsystems.drivetrain.commands.DriveXboxController;
 
 public class RobotContainer {
     private static RobotContainer INSTANCE = null;
     private final XboxController xboxController = new XboxController(0);
-        private final Joystick leftJoystick = new Joystick(1);
+    private final Joystick leftJoystick = new Joystick(1);
     private final Joystick rightJoystick = new Joystick(2);
     private final JoystickButton rb = new JoystickButton(xboxController, XboxController.Button.kRightBumper.value);
 //    private final Trigger leftTrigger = new JoystickButton(leftJoystick, Joystick.ButtonType.kTrigger.value);

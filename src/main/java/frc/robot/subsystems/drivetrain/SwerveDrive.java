@@ -33,7 +33,7 @@ public class SwerveDrive extends LoggedSubsystem<SwerveDriveLogInputs> {
     private final SwerveModule mFrontRight;
     private final SwerveModule mRearLeft;
     private final SwerveModule mRearRight;
-    private SwerveModuleState[] swerveModuleStates = new SwerveModuleState[] {
+    private SwerveModuleState[] swerveModuleStates = new SwerveModuleState[]{
             new SwerveModuleState(),
             new SwerveModuleState(),
             new SwerveModuleState(),
@@ -191,10 +191,10 @@ public class SwerveDrive extends LoggedSubsystem<SwerveDriveLogInputs> {
 
         if (SmartDashboard.getBoolean("Zero Swerve", false)) {
             SmartDashboard.putString("Zero Positions", "{" +
-                    (int) mFrontLeft.getEncoderTicks() + ", " +
-                    (int) mFrontRight.getEncoderTicks() + ", " +
-                    (int) mRearLeft.getEncoderTicks() + ", " +
-                    (int) mRearRight.getEncoderTicks() + "}");
+                    mFrontLeft.getEncoderTicks() + ", " +
+                    mFrontRight.getEncoderTicks() + ", " +
+                    mRearLeft.getEncoderTicks() + ", " +
+                    mRearRight.getEncoderTicks() + "}");
         }
     }
 

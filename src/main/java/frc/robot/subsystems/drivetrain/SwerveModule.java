@@ -106,7 +106,7 @@ public class SwerveModule extends LoggedSubsystem<SwerveModuleLogInputs> {
         return loggerInputs.aAngle;
     }
 
-    public double getEncoderTicks() {
+    public int getEncoderTicks() {
         return toFalconTicks(loggerInputs.encoderAngle);
     }
 
