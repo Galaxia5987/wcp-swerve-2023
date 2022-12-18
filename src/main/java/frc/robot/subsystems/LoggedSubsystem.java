@@ -20,10 +20,6 @@ public abstract class LoggedSubsystem<T extends LoggableInputs> extends Subsyste
         return subsystems;
     }
 
-    public LoggableInputs getLoggerInputs() {
-        return loggerInputs;
-    }
-
     public void updateSubsystem() {
         updateInputs();
         Logger.getInstance().processInputs(getSubsystemName(), loggerInputs);
