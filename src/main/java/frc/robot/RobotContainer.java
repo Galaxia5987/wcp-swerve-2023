@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.autonomous.FollowPath;
 import frc.robot.subsystems.drivetrain.commands.DriveJoysticks;
+import frc.robot.subsystems.drivetrain.commands.DriveXboxController;
 
 public class RobotContainer {
     private static RobotContainer INSTANCE = null;
@@ -34,8 +35,8 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        Robot.swerveSubsystem.setDefaultCommand(new DriveJoysticks(leftJoystick, rightJoystick));
-//        Robot.swerveSubsystem.setDefaultCommand(new DriveXboxController(xboxController));
+//        Robot.swerveSubsystem.setDefaultCommand(new DriveJoysticks(leftJoystick, rightJoystick));
+        Robot.swerveSubsystem.setDefaultCommand(new DriveXboxController(xboxController));
     }
 
     private void configureButtonBindings() {

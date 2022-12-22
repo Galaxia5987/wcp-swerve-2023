@@ -10,7 +10,7 @@ public final class Constants {
 
     // Swerve
     public static final double TICKS_PER_ROTATION = 2048;
-    public static final int[] OFFSETS = {20144, 6427, 16210, 1756};
+    public static final int[] OFFSETS = {20144, 6450, 16025, 1737};
 
     public static final double DRIVETRAIN_TRACK_WIDTH_METERS = 0.594;
     public static final double DRIVETRAIN_WHEELBASE_METERS = 0.594;
@@ -23,9 +23,9 @@ public final class Constants {
     public static final int REAR_LEFT_MODULE_STEER_MOTOR_ID = 6;
     public static final int REAR_RIGHT_MODULE_DRIVE_MOTOR_ID = 5;
     public static final int REAR_RIGHT_MODULE_STEER_MOTOR_ID = 2;
-    public static final double DRIVE_REDUCTION = 0.1;
+    public static final double DRIVE_REDUCTION = (1 / 2.0) * (22.0 / 24.0) * (15.0 / 45.0);
     public static final double ANGLE_GEAR_RATIO = (14.0 / 72.0) * 0.5;
-    public static final double WHEEL_DIAMETER = 0.1;
+    public static final double WHEEL_DIAMETER = 0.11140846016;
     // kP, kI, kD, kF, sCurveStrength, cruiseVelocity, acceleration, allowableError,
     // maxIntegralAccum, peakOutput
     public static final double[] FRONT_LEFT_MOTION_MAGIC_CONFIGS = {1.2, 0, 0, 0.2, 1, 21288, 25000, 10, 5, 1};

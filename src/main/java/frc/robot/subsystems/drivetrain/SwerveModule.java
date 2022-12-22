@@ -4,14 +4,15 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import edu.wpi.first.hal.simulation.DriverStationDataJNI;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.LoggedSubsystem;
 import frc.robot.utils.motors.PIDTalon;
-import frc.robot.utils.units.UnitModel;
 
 import static frc.robot.Constants.*;
 
@@ -22,7 +23,6 @@ public class SwerveModule extends LoggedSubsystem<SwerveModuleLogInputs> {
     private final int offset;
     private final SwerveDrive.Module number;
     private final double[] motionMagicConfigs;
-    private final UnitModel falconToAngleModel = new UnitModel((TICKS_PER_ROTATION / (2 * Math.PI)) * ANGLE_GEAR_RATIO);
     private boolean initializedOffset = false;
 
     public SwerveModule(SwerveDrive.Module number, int driveMotorPort, int angleMotorPort, int encoderPort, int offset, boolean driveInverted,
@@ -91,11 +91,11 @@ public class SwerveModule extends LoggedSubsystem<SwerveModuleLogInputs> {
     }
 
     public Rotation2d toWheelAbsoluteAngle(double ticks) {
-        return new Rotation2d(falconToAngleModel.toUnits(ticks) % (2 * Math.PI));
+        return new Rotation2d(((ticks / TICKS_PER_ROTATION) * 2 * Math.PI * ANGLE_GEAR_RATIO) % (2 * Math.PI));
     }
 
     public int toFalconTicks(Rotation2d angle) {
-        return falconToAngleModel.toTicks(angle.getRadians());
+        return (int) (((angle.getDegrees() / 360) * TICKS_PER_ROTATION) / ANGLE_GEAR_RATIO);
     }
 
     public int absoluteEncoderToAbsoluteFalcon(double encoder) {
