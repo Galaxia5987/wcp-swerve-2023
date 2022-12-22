@@ -38,7 +38,7 @@ public class PIDTalon extends TalonFX {
         lastMotionMaxAcceleration = 0;
     }
 
-    public ErrorCode updatePID(int slot, double kP, double kI, double kD, double kF) {
+    public ErrorCode updatePIDF(int slot, double kP, double kI, double kD, double kF) {
         ErrorCode[] errorCodes = new ErrorCode[]{
                 ErrorCode.OK,
                 ErrorCode.OK,

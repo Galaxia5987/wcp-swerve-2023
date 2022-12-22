@@ -13,6 +13,7 @@ public class SwerveModuleLogInputs implements LoggableInputs {
     public double aCurrent = 0;
 
     public double dVelocity = 0;
+    public double dSetpoint = 0;
     public double dCurrent = 0;
 
     public SwerveModuleLogInputs() {
@@ -28,6 +29,7 @@ public class SwerveModuleLogInputs implements LoggableInputs {
         table.put("aCurrent", aCurrent);
 
         table.put("dVelocity", dVelocity);
+        table.put("dSetpoint", dSetpoint);
         table.put("dCurrent", dCurrent);
     }
 

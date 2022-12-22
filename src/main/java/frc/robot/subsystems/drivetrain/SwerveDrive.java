@@ -174,6 +174,12 @@ public class SwerveDrive extends LoggedSubsystem<SwerveDriveLogInputs> {
         mRearRight.stop();
     }
 
+    public void vroom() {
+        mFrontLeft.vroom();
+        mFrontRight.vroom();
+        mRearLeft.vroom();
+        mRearRight.vroom();
+    }
     @Override
     public void periodic() {
         updateOdometry();
