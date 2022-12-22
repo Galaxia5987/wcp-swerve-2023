@@ -110,8 +110,6 @@ public class SwerveDrive extends LoggedSubsystem<SwerveDriveLogInputs> {
     }
 
     public void drive(double vx, double vy, double theta, Translation2d centerOfRotation) {
-        loggerInputs.speeds = new double[]{vx, vy, theta};
-
         if (Utils.epsilonEquals(vx, 0, 0.05) &&
                 Utils.epsilonEquals(vy, 0, 0.05) &&
                 Utils.epsilonEquals(theta, 0, 0.05)) {
@@ -156,6 +154,12 @@ public class SwerveDrive extends LoggedSubsystem<SwerveDriveLogInputs> {
     @Override
     public void updateInputs() {
         loggerInputs.pose = Utils.pose2dToArray(getPose());
+        loggerInputs.speeds = Utils.chassisSpeedsToArray(mKinematics.toChassisSpeeds(
+                mFrontLeft.getState(),
+                mFrontRight.getState(),
+                mRearLeft.getState(),
+                mRearRight.getState()
+        ));
     }
 
     @Override

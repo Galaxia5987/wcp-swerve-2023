@@ -14,6 +14,10 @@ import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.utils.Utils;
 import frc.robot.utils.controllers.PIDFController;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class FollowPath extends CommandBase {
     private final Timer timer = new Timer();
     private final SwerveDrive swerveDrive = Robot.swerveSubsystem;
@@ -56,10 +60,10 @@ public class FollowPath extends CommandBase {
                 SmartDashboard.getNumber("PathFollowerCommand_xyKi", Constants.AUTO_XY_Ki),
                 SmartDashboard.getNumber("PathFollowerCommand_xyKd", Constants.AUTO_XY_Kd),
                 SmartDashboard.getNumber("PathFollowerCommand_xyKf", Constants.AUTO_XY_Kf));
-        thetaController.setPIDF(SmartDashboard.getNumber("PathFollowerCommand_rotationKp", 1.0),
-                SmartDashboard.getNumber("PathFollowerCommand_rotationKi", 0.0),
-                SmartDashboard.getNumber("PathFollowerCommand_rotationKd", 0.0),
-                SmartDashboard.getNumber("PathFollowerCommand_rotationKf", 0.0));
+//        thetaController.setPIDF(SmartDashboard.getNumber("PathFollowerCommand_rotationKp", 1.0),
+//                SmartDashboard.getNumber("PathFollowerCommand_rotationKi", 0.0),
+//                SmartDashboard.getNumber("PathFollowerCommand_rotationKd", 0.0),
+//                SmartDashboard.getNumber("PathFollowerCommand_rotationKf", 0.0));
         holonomicDriveController = new HolonomicDriveController(
                 xController, yController,
                 new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(0, 0)
@@ -83,8 +87,11 @@ public class FollowPath extends CommandBase {
                 Robot.gyroscope.getAngle().getRadians(), desiredState.holonomicRotation.getRadians());
 
         double omega = rotation * Math.hypot(desiredSpeeds.vxMetersPerSecond, desiredSpeeds.vyMetersPerSecond);
-        ChassisSpeeds speeds = Utils.deadbandSpeeds(new ChassisSpeeds(desiredSpeeds.vxMetersPerSecond, desiredSpeeds.vyMetersPerSecond, omega + rotation), 0.05);
+        ChassisSpeeds speeds = Utils.deadbandSpeeds(new ChassisSpeeds(desiredSpeeds.vxMetersPerSecond, desiredSpeeds.vyMetersPerSecond, rotation + omega), 0.05);
         swerveDrive.drive(speeds);
+
+//        lastRotation = desiredState.holonomicRotation;
+//        lastTime = curTime;
     }
 
     @Override

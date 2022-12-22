@@ -5,11 +5,10 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.autonomous.FollowPath;
-import frc.robot.subsystems.drivetrain.commands.DriveJoysticks;
 import frc.robot.subsystems.drivetrain.commands.DriveXboxController;
+import frc.robot.subsystems.drivetrain.commands.Test;
 
 public class RobotContainer {
     private static RobotContainer INSTANCE = null;
@@ -39,6 +38,7 @@ public class RobotContainer {
 //        Robot.swerveSubsystem.setDefaultCommand(new DriveJoysticks(leftJoystick, rightJoystick));
         Robot.swerveSubsystem.setDefaultCommand(new DriveXboxController(xboxController));
 //        Robot.swerveSubsystem.setDefaultCommand(new RunCommand(Robot.swerveSubsystem::vroom){{ addRequirements(Robot.swerveSubsystem); }});
+//        Robot.swerveSubsystem.setDefaultCommand(new Test());
     }
 
     private void configureButtonBindings() {
@@ -54,9 +54,10 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         return new FollowPath(
-                PathPlanner.loadPath("Straight Path",
+                PathPlanner.loadPath("Rotation Path",
                         Constants.MAX_VELOCITY_METERS_PER_SECOND,
                         Constants.MAX_ACCELERATION),
                 true);
+//        return new Test();
     }
 }

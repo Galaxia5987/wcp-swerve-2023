@@ -3,9 +3,11 @@ package frc.robot.subsystems.drivetrain;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.LoggedSubsystem;
 import frc.robot.utils.motors.PIDTalon;
@@ -76,6 +78,8 @@ public class SwerveModule extends LoggedSubsystem<SwerveModuleLogInputs> {
     }
 
     public void set(double speed, Rotation2d angle) {
+        loggerInputs.dSetpoint = speed * MAX_VELOCITY_METERS_PER_SECOND * Math.abs(Math.signum(loggerInputs.dVelocity));
+
         SwerveModuleState optimized = SwerveModuleState.optimize(new SwerveModuleState(speed, angle), loggerInputs.aAngle);
         speed = optimized.speedMetersPerSecond;
         angle = optimized.angle;
@@ -107,12 +111,17 @@ public class SwerveModule extends LoggedSubsystem<SwerveModuleLogInputs> {
     }
 
     public SwerveModuleState getState() {
-        return new SwerveModuleState(loggerInputs.dVelocity, getAngle());
+        return new SwerveModuleState(loggerInputs.dSetpoint, getAngle());
     }
 
     public void stop() {
         angleMotor.neutralOutput();
         driveMotor.neutralOutput();
+    }
+
+    public void vroom() {
+        driveMotor.set(ControlMode.PercentOutput, 1);
+        angleMotor.set(ControlMode.PercentOutput, 0.5);
     }
 
     @Override
@@ -123,7 +132,7 @@ public class SwerveModule extends LoggedSubsystem<SwerveModuleLogInputs> {
         loggerInputs.offsetAngle = toWheelAbsoluteAngle(offset);
         loggerInputs.aCurrent = angleMotor.getSupplyCurrent();
 
-        loggerInputs.dVelocity = driveMotor.getMotorOutputVoltage() / RobotController.getBatteryVoltage() * MAX_VELOCITY_METERS_PER_SECOND;
+        loggerInputs.dVelocity = ((driveMotor.getSelectedSensorVelocity() / TICKS_PER_ROTATION) * (Math.PI * WHEEL_DIAMETER)) * 10;
         loggerInputs.dCurrent = driveMotor.getSupplyCurrent();
     }
 
@@ -136,7 +145,7 @@ public class SwerveModule extends LoggedSubsystem<SwerveModuleLogInputs> {
         }
 
         if (SmartDashboard.getBoolean("Swerve Tune Motion Magic", false)) {
-            angleMotor.updatePID(0,
+            angleMotor.updatePIDF(0,
                     SmartDashboard.getNumber(number.name() + "_kP", motionMagicConfigs[MotionMagicConfig.Kp.index]),
                     SmartDashboard.getNumber(number.name() + "_kI", motionMagicConfigs[MotionMagicConfig.Ki.index]),
                     SmartDashboard.getNumber(number.name() + "_kD", motionMagicConfigs[MotionMagicConfig.Kd.index]),

@@ -12,8 +12,8 @@ public final class Constants {
     public static final double TICKS_PER_ROTATION = 2048;
     public static final int[] OFFSETS = {20144, 6450, 16025, 1737};
 
-    public static final double DRIVETRAIN_TRACK_WIDTH_METERS = 0.594;
-    public static final double DRIVETRAIN_WHEELBASE_METERS = 0.594;
+    public static final double DRIVETRAIN_TRACK_WIDTH_METERS = 0.595;
+    public static final double DRIVETRAIN_WHEELBASE_METERS = 0.595;
 
     public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR_ID = 7;
     public static final int FRONT_LEFT_MODULE_STEER_MOTOR_ID = 8;
@@ -28,10 +28,10 @@ public final class Constants {
     public static final double WHEEL_DIAMETER = 0.11140846016;
     // kP, kI, kD, kF, sCurveStrength, cruiseVelocity, acceleration, allowableError,
     // maxIntegralAccum, peakOutput
-    public static final double[] FRONT_LEFT_MOTION_MAGIC_CONFIGS = {1.2, 0, 0, 0.2, 1, 21288, 25000, 10, 5, 1};
-    public static final double[] FRONT_RIGHT_MOTION_MAGIC_CONFIGS = {1.2, 0, 0, 0.2, 1, 21288, 25000, 10, 5, 1};
-    public static final double[] REAR_LEFT_MOTION_MAGIC_CONFIGS = {1.2, 0, 0, 0.2, 1, 21288, 25000, 10, 5, 1};
-    public static final double[] REAR_RIGHT_MOTION_MAGIC_CONFIGS = {1.2, 0, 0, 0.2, 1, 21288, 25000, 10, 5, 1};
+    public static final double[] FRONT_LEFT_MOTION_MAGIC_CONFIGS = {0.8, 0, 0, 0.2, 1, 21288, 25000, 10, 5, 0.6};
+    public static final double[] FRONT_RIGHT_MOTION_MAGIC_CONFIGS = {0.8, 0, 0, 0.2, 1, 21288, 25000, 10, 5, 0.6};
+    public static final double[] REAR_LEFT_MOTION_MAGIC_CONFIGS = {0.8, 0, 0, 0.2, 1, 21288, 25000, 10, 5, 0.6};
+    public static final double[] REAR_RIGHT_MOTION_MAGIC_CONFIGS = {0.8, 0, 0, 0.2, 1, 21288, 25000, 10, 5, 0.6};
     public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
             DRIVE_REDUCTION *
             WHEEL_DIAMETER * Math.PI + 0.2;
