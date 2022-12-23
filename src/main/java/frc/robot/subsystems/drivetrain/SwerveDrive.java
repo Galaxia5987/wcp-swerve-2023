@@ -110,13 +110,11 @@ public class SwerveDrive extends LoggedSubsystem<SwerveDriveLogInputs> {
     }
 
     public void drive(double vx, double vy, double theta, Translation2d centerOfRotation) {
-        if (Utils.epsilonEquals(vx, 0, 0.05) &&
-                Utils.epsilonEquals(vy, 0, 0.05) &&
-                Utils.epsilonEquals(theta, 0, 0.05)) {
-            mFrontLeft.stop();
-            mFrontRight.stop();
-            mRearLeft.stop();
-            mRearRight.stop();
+        if (Utils.epsilonEquals(vx, 0, 0.1 * MAX_VELOCITY_METERS_PER_SECOND) &&
+                Utils.epsilonEquals(vy, 0, 0.1 * MAX_VELOCITY_METERS_PER_SECOND) &&
+                Utils.epsilonEquals(theta, 0, 0.1 * MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND)) {
+            stop();
+            System.out.println("Called");
             return;
         }
 
@@ -184,6 +182,7 @@ public class SwerveDrive extends LoggedSubsystem<SwerveDriveLogInputs> {
         mRearLeft.vroom();
         mRearRight.vroom();
     }
+
     @Override
     public void periodic() {
         updateOdometry();

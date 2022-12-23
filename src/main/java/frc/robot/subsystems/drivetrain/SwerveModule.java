@@ -7,7 +7,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.LoggedSubsystem;
 import frc.robot.utils.motors.PIDTalon;
@@ -78,16 +77,17 @@ public class SwerveModule extends LoggedSubsystem<SwerveModuleLogInputs> {
     }
 
     public void set(double speed, Rotation2d angle) {
-        loggerInputs.dSetpoint = speed * MAX_VELOCITY_METERS_PER_SECOND * Math.abs(Math.signum(loggerInputs.dVelocity));
+        loggerInputs.dSetpoint = speed * MAX_VELOCITY_METERS_PER_SECOND;
 
         SwerveModuleState optimized = SwerveModuleState.optimize(new SwerveModuleState(speed, angle), loggerInputs.aAngle);
         speed = optimized.speedMetersPerSecond;
         angle = optimized.angle;
         loggerInputs.aSetpoint = angle; // Setpoint angle of the wheel
+        Rotation2d error = loggerInputs.aSetpoint.minus(loggerInputs.aAngle);
 
         driveMotor.set(ControlMode.PercentOutput, speed);
 
-        angleMotor.set(ControlMode.MotionMagic, toFalconTicks(loggerInputs.aSetpoint));
+        angleMotor.set(ControlMode.MotionMagic, loggerInputs.aPosition + toFalconTicks(error));
     }
 
     public Rotation2d toWheelAbsoluteAngle(double ticks) {

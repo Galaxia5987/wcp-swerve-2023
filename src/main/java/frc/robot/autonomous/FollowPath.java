@@ -14,17 +14,14 @@ import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.utils.Utils;
 import frc.robot.utils.controllers.PIDFController;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 public class FollowPath extends CommandBase {
     private final Timer timer = new Timer();
     private final SwerveDrive swerveDrive = Robot.swerveSubsystem;
     private final PathPlannerTrajectory trajectory;
     private final PIDFController xController;
     private final PIDFController yController;
-    private final PIDFController thetaController = new PIDFController(Constants.AUTO_ROTATION_Kp, Constants.AUTO_ROTATION_Ki, Constants.AUTO_ROTATION_Kd, Constants.AUTO_ROTATION_Kf) {{
+    private final ProfiledPIDController thetaController = new ProfiledPIDController(Constants.AUTO_ROTATION_Kp, Constants.AUTO_ROTATION_Ki, Constants.AUTO_ROTATION_Kd,
+            new TrapezoidProfile.Constraints(Constants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND_AUTO, Constants.MAX_ANGULAR_ACCELERATION_AUTO)) {{
         enableContinuousInput(-Math.PI, Math.PI);
     }};
     private HolonomicDriveController holonomicDriveController;
@@ -33,12 +30,12 @@ public class FollowPath extends CommandBase {
     public FollowPath(PathPlannerTrajectory trajectory, boolean firstPath) {
         this.trajectory = trajectory;
         xController = new PIDFController(Constants.AUTO_XY_Kp, Constants.AUTO_XY_Ki, Constants.AUTO_XY_Kd, Constants.AUTO_XY_Kf);
-        yController = new PIDFController(Constants.AUTO_ROTATION_Kp, Constants.AUTO_ROTATION_Ki, Constants.AUTO_ROTATION_Kd, Constants.AUTO_ROTATION_Kf);
+        yController = new PIDFController(Constants.AUTO_XY_Kp, Constants.AUTO_XY_Ki, Constants.AUTO_XY_Kd, Constants.AUTO_XY_Kf);
 
         holonomicDriveController = new HolonomicDriveController(
                 xController,
                 yController,
-                new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(0., 0))
+                new ProfiledPIDController(Constants.AUTO_ROTATION_Kp, 0, 0, new TrapezoidProfile.Constraints(Constants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND_AUTO, Constants.MAX_ANGULAR_ACCELERATION_AUTO))
         );
 
         addRequirements(swerveDrive);
@@ -60,14 +57,14 @@ public class FollowPath extends CommandBase {
                 SmartDashboard.getNumber("PathFollowerCommand_xyKi", Constants.AUTO_XY_Ki),
                 SmartDashboard.getNumber("PathFollowerCommand_xyKd", Constants.AUTO_XY_Kd),
                 SmartDashboard.getNumber("PathFollowerCommand_xyKf", Constants.AUTO_XY_Kf));
-//        thetaController.setPIDF(SmartDashboard.getNumber("PathFollowerCommand_rotationKp", 1.0),
-//                SmartDashboard.getNumber("PathFollowerCommand_rotationKi", 0.0),
-//                SmartDashboard.getNumber("PathFollowerCommand_rotationKd", 0.0),
-//                SmartDashboard.getNumber("PathFollowerCommand_rotationKf", 0.0));
+        thetaController.setPID(SmartDashboard.getNumber("PathFollowerCommand_rotationKp", 1.0),
+                SmartDashboard.getNumber("PathFollowerCommand_rotationKi", 0.0),
+                SmartDashboard.getNumber("PathFollowerCommand_rotationKd", 0.0));
         holonomicDriveController = new HolonomicDriveController(
                 xController, yController,
-                new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(0, 0)
+                new ProfiledPIDController(thetaController.getP(), 0, 0, new TrapezoidProfile.Constraints(Constants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND_AUTO, Constants.MAX_ANGULAR_ACCELERATION_AUTO)
                 ));
+        swerveDrive.setFieldOriented(false);
     }
 
     @Override
@@ -83,11 +80,14 @@ public class FollowPath extends CommandBase {
                 desiredState.holonomicRotation
         );
 
-        double rotation = thetaController.calculate(
-                Robot.gyroscope.getAngle().getRadians(), desiredState.holonomicRotation.getRadians());
+//        double rotation = thetaController.calculate(
+//                Robot.gyroscope.getAngle().getRadians(), desiredState.holonomicRotation.getRadians());
 
-        double omega = rotation * Math.hypot(desiredSpeeds.vxMetersPerSecond, desiredSpeeds.vyMetersPerSecond);
-        ChassisSpeeds speeds = Utils.deadbandSpeeds(new ChassisSpeeds(desiredSpeeds.vxMetersPerSecond, desiredSpeeds.vyMetersPerSecond, rotation + omega), 0.05);
+        double omega = 2 * desiredSpeeds.omegaRadiansPerSecond * Math.hypot(desiredSpeeds.vxMetersPerSecond, desiredSpeeds.vyMetersPerSecond);
+//        double rotation = desiredState.holonomicRotation.minus(Robot.gyroscope.getAngle()).getRadians()
+//                * SmartDashboard.getNumber("PathFollowerCommand_rotationKp", Constants.AUTO_ROTATION_Kp);
+//        rotation += Math.signum(rotation) * SmartDashboard.getNumber("PathFollowerCommand_rotationKf", Constants.AUTO_ROTATION_Kf);
+        ChassisSpeeds speeds = Utils.deadbandSpeeds(new ChassisSpeeds(desiredSpeeds.vxMetersPerSecond, desiredSpeeds.vyMetersPerSecond, desiredSpeeds.omegaRadiansPerSecond + omega), 0.05);
         swerveDrive.drive(speeds);
 
 //        lastRotation = desiredState.holonomicRotation;
@@ -97,6 +97,7 @@ public class FollowPath extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         timer.stop();
+        swerveDrive.drive(0, 0, 0);
         swerveDrive.stop();
     }
 

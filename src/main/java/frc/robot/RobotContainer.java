@@ -1,14 +1,14 @@
 package frc.robot;
 
 import com.pathplanner.lib.PathPlanner;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.autonomous.FollowPath;
+import frc.robot.autonomous.PPSwerveControllerCommand;
 import frc.robot.subsystems.drivetrain.commands.DriveXboxController;
-import frc.robot.subsystems.drivetrain.commands.Test;
 
 public class RobotContainer {
     private static RobotContainer INSTANCE = null;
@@ -53,11 +53,18 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return new FollowPath(
+        Robot.swerveSubsystem.setFieldOriented(false);
+        Robot.swerveSubsystem.resetOdometry(PathPlanner.loadPath("Rotation Path",
+                Constants.MAX_VELOCITY_METERS_PER_SECOND, Constants.MAX_LINEAR_ACCELERATION).getInitialPose());
+        return new PPSwerveControllerCommand(
                 PathPlanner.loadPath("Rotation Path",
-                        Constants.MAX_VELOCITY_METERS_PER_SECOND,
-                        Constants.MAX_ACCELERATION),
-                true);
-//        return new Test();
+                        Constants.MAX_VELOCITY_METERS_PER_SECOND, Constants.MAX_LINEAR_ACCELERATION),
+                Robot.swerveSubsystem::getPose,
+                new PIDController(Constants.AUTO_XY_Kp, Constants.AUTO_XY_Ki, Constants.AUTO_XY_Kd),
+                new PIDController(Constants.AUTO_XY_Kp, Constants.AUTO_XY_Ki, Constants.AUTO_XY_Kd),
+                new PIDController(Constants.AUTO_ROTATION_Kp, Constants.AUTO_ROTATION_Ki, Constants.AUTO_ROTATION_Kd),
+                Robot.swerveSubsystem::drive,
+                Robot.swerveSubsystem
+        );
     }
 }
