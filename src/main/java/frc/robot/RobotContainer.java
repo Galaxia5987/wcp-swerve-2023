@@ -58,7 +58,7 @@ public class RobotContainer {
                 Constants.MAX_VELOCITY_METERS_PER_SECOND, Constants.MAX_LINEAR_ACCELERATION).getInitialPose());
         return new PPSwerveControllerCommand(
                 PathPlanner.loadPath("Rotation Path",
-                        Constants.MAX_VELOCITY_METERS_PER_SECOND, Constants.MAX_LINEAR_ACCELERATION),
+                        4, 2),
                 Robot.swerveSubsystem::getPose,
                 new PIDController(Constants.AUTO_XY_Kp, Constants.AUTO_XY_Ki, Constants.AUTO_XY_Kd),
                 new PIDController(Constants.AUTO_XY_Kp, Constants.AUTO_XY_Ki, Constants.AUTO_XY_Kd),

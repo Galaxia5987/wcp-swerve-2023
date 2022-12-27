@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
 import frc.robot.subsystems.LoggedSubsystem;
 import frc.robot.utils.motors.PIDTalon;
 
@@ -38,7 +39,9 @@ public class SwerveModule extends LoggedSubsystem<SwerveModuleLogInputs> {
         driveMotor.setInverted(driveInverted);
         driveMotor.setNeutralMode(NeutralMode.Brake);
         driveMotor.selectProfileSlot(1, 0);
-        driveMotor.configNeutralDeadband(0.1);
+        driveMotor.configNeutralDeadband(0.175);
+//        driveMotor.enableVoltageCompensation(true);
+//        driveMotor.configVoltageCompSaturation(NOMINAL_VOLTAGE);
 
         angleMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, TALON_TIMEOUT);
         angleMotor.configFeedbackNotContinuous(false, TALON_TIMEOUT);
@@ -48,6 +51,8 @@ public class SwerveModule extends LoggedSubsystem<SwerveModuleLogInputs> {
 
         angleMotor.setNeutralMode(NeutralMode.Brake);
         angleMotor.selectProfileSlot(0, 0);
+//        angleMotor.enableVoltageCompensation(true);
+//        angleMotor.configVoltageCompSaturation(NOMINAL_VOLTAGE);
 
         encoder = new DutyCycleEncoder(encoderPort);
 
