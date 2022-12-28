@@ -114,7 +114,6 @@ public class SwerveDrive extends LoggedSubsystem<SwerveDriveLogInputs> {
                 Utils.epsilonEquals(vy, 0, 0.1 * MAX_VELOCITY_METERS_PER_SECOND) &&
                 Utils.epsilonEquals(theta, 0, 0.1 * MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND)) {
             stop();
-            System.out.println("Called");
             return;
         }
 

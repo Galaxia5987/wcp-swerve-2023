@@ -36,11 +36,9 @@ public final class Constants {
             DRIVE_REDUCTION *
             WHEEL_DIAMETER * Math.PI + 0.2;
     public static final double MAX_LINEAR_ACCELERATION = MAX_VELOCITY_METERS_PER_SECOND / 2;
-    public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND_AUTO = 10.0;
-    public static final double MAX_ANGULAR_ACCELERATION_AUTO = MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND_AUTO / 2;
-    public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = 8.0;
+    public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = 13.0;
 
-    public static final double TARGET_ADJUST_Kp = 0;
+    public static final double TARGET_ADJUST_Kp = 1.0;
     public static final double TARGET_ADJUST_Kf = 0;
 
     public static final double XY_SLEW_RATE_LIMIT = 3.0;

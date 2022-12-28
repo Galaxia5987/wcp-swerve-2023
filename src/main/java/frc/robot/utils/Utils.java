@@ -42,7 +42,7 @@ public class Utils {
 
     public static ChassisSpeeds deadbandSpeeds(ChassisSpeeds speeds, double tolerance) {
         double toleranceXY = tolerance * Constants.MAX_VELOCITY_METERS_PER_SECOND;
-        double toleranceRotation = tolerance * Constants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND_AUTO;
+        double toleranceRotation = tolerance * Constants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
 
         return new ChassisSpeeds(
                 deadband(speeds.vxMetersPerSecond, toleranceXY),
