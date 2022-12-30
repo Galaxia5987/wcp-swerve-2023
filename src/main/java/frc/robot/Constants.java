@@ -10,7 +10,7 @@ public final class Constants {
 
     // Swerve
     public static final double TICKS_PER_ROTATION = 2048;
-    public static final int[] OFFSETS = {20205, 6486, 15988, 1766};
+    public static final int[] OFFSETS = {20158, 6551, 16034, 1662};
 
     public static final double DRIVETRAIN_TRACK_WIDTH_METERS = 0.595;
     public static final double DRIVETRAIN_WHEELBASE_METERS = 0.595;
