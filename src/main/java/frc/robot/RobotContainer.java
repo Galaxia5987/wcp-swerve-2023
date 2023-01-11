@@ -1,7 +1,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.PathPlanner;
-import edu.wpi.first.hal.PowerDistributionJNI;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -55,12 +54,12 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        var trajectory = PathPlanner.loadPath("Big Path", 4, 2);
         Robot.swerveSubsystem.setFieldOriented(false);
-        Robot.swerveSubsystem.resetOdometry(trajectory.getInitialPose());
-        Robot.gyroscope.resetAngle(trajectory.getInitialPose().getRotation());
+        Robot.swerveSubsystem.resetOdometry(PathPlanner.loadPath("Rotation Path",
+                Constants.MAX_VELOCITY_METERS_PER_SECOND, Constants.MAX_LINEAR_ACCELERATION).getInitialPose());
         return new PPSwerveControllerCommand(
-                trajectory,
+                PathPlanner.loadPath("Rotation Path",
+                        4, 2),
                 Robot.swerveSubsystem::getPose,
                 new PIDController(Constants.AUTO_XY_Kp, Constants.AUTO_XY_Ki, Constants.AUTO_XY_Kd),
                 new PIDController(Constants.AUTO_XY_Kp, Constants.AUTO_XY_Ki, Constants.AUTO_XY_Kd),
