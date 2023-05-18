@@ -4,18 +4,19 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import com.pathplanner.lib.server.PathPlannerServer;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.LoggedSubsystem;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
-import frc.robot.subsystems.gyroscope.Gyroscope;
-import frc.robot.utils.valuetuner.NetworkTableConstant;
+import frc.robot.subsystems.drivetrain.SwerveModule;
+import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.inputs.LoggedNetworkTables;
-import org.littletonrobotics.junction.io.ByteLogReceiver;
-import org.littletonrobotics.junction.io.LogSocketServer;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGReader;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -24,8 +25,6 @@ import org.littletonrobotics.junction.io.LogSocketServer;
  * project.
  */
 public class Robot extends LoggedRobot {
-    public static final Gyroscope gyroscope = new Gyroscope();
-    public static final SwerveDrive swerveSubsystem = new SwerveDrive();
 
     public static boolean debug = false;
 
@@ -38,29 +37,30 @@ public class Robot extends LoggedRobot {
      */
     @Override
     public void robotInit() {
+        PathPlannerServer.startServer(5811);
         robotContainer = RobotContainer.getInstance();
         autonomousCommand = robotContainer.getAutonomousCommand();
 
-        setUseTiming(isReal()); // Run as fast as possible during replay
-        LoggedNetworkTables.getInstance().addTable("/SmartDashboard"); // Log & replay "SmartDashboard" values (no tables are logged by default).
-        Logger.getInstance().recordMetadata("ProjectName", "Wcp-Swerve-2023"); // Set a metadata value
+        Logger.getInstance().recordMetadata("ProjectName", "Robot-2023"); // Set a metadata value
 
-        Logger.getInstance().addDataReceiver(new ByteLogReceiver("/media/sda1/")); // Log to USB stick (name will be selected automatically)
-        Logger.getInstance().addDataReceiver(new LogSocketServer(5804)); // Provide log data over the network, viewable in Advantage Scope.
+        if (isReal()) {
+            Logger.getInstance().addDataReceiver(new WPILOGWriter("/home/lvuser")); // Log to a USB stick
+            Logger.getInstance().addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
+            new PowerDistribution(1, PowerDistribution.ModuleType.kRev); // Enables power distribution logging
+        } else {
+            setUseTiming(false); // Run as fast as possible
+            String logPath = LogFileUtil.findReplayLog(); // Pull the replay log from AdvantageScope (or prompt the user)
+            Logger.getInstance().setReplaySource(new WPILOGReader(logPath)); // Read replay log
+            Logger.getInstance().addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim"))); // Save outputs to a new log
+        }
+
+        PathPlannerServer.startServer(5811);
 
         Logger.getInstance().start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
-        NetworkTableConstant.initializeAllConstants();
 
-        SmartDashboard.putBoolean("Zero Swerve", false);
-        SmartDashboard.putBoolean("Swerve Tune Motion Magic", false);
-        SmartDashboard.putNumber("PathFollowerCommand_xyKp", Constants.AUTO_XY_Kp);
-        SmartDashboard.putNumber("PathFollowerCommand_xyKi", Constants.AUTO_XY_Ki);
-        SmartDashboard.putNumber("PathFollowerCommand_xyKd", Constants.AUTO_XY_Kd);
-        SmartDashboard.putNumber("PathFollowerCommand_xyKf", Constants.AUTO_XY_Kf);
-        SmartDashboard.putNumber("PathFollowerCommand_rotationKp", Constants.AUTO_ROTATION_Kp);
-        SmartDashboard.putNumber("PathFollowerCommand_rotationKi", Constants.AUTO_ROTATION_Ki);
-        SmartDashboard.putNumber("PathFollowerCommand_rotationKd", Constants.AUTO_ROTATION_Kd);
-        SmartDashboard.putNumber("PathFollowerCommand_rotationKf", Constants.AUTO_ROTATION_Kf);
+        for (SwerveModule module : SwerveDrive.getInstance().getModules()) {
+            module.initializeOffset();
+        }
     }
 
     /**

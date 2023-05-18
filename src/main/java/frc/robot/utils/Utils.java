@@ -2,7 +2,6 @@ package frc.robot.utils;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import frc.robot.Constants;
 
 public class Utils {
     public static final double EPSILON = 1e-9;
@@ -40,13 +39,9 @@ public class Utils {
         return new ChassisSpeeds(array[0], array[1], array[2]);
     }
 
-    public static ChassisSpeeds deadbandSpeeds(ChassisSpeeds speeds, double tolerance) {
-        double toleranceXY = tolerance * Constants.MAX_VELOCITY_METERS_PER_SECOND;
-        double toleranceRotation = tolerance * Constants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
-
-        return new ChassisSpeeds(
-                deadband(speeds.vxMetersPerSecond, toleranceXY),
-                deadband(speeds.vyMetersPerSecond, toleranceXY),
-                deadband(speeds.omegaRadiansPerSecond, toleranceRotation));
+    public static boolean speedsEpsilonEquals(ChassisSpeeds speeds) {
+        return epsilonEquals(speeds.vxMetersPerSecond, 0) &&
+                epsilonEquals(speeds.vyMetersPerSecond, 0) &&
+                epsilonEquals(speeds.omegaRadiansPerSecond, 0);
     }
 }

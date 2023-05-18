@@ -4,15 +4,17 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants;
 import frc.robot.subsystems.LoggedSubsystem;
 import frc.robot.utils.motors.PIDTalon;
 
-import static frc.robot.Constants.*;
+import static frc.robot.Constants.TALON_TIMEOUT;
+import static frc.robot.subsystems.drivetrain.SwerveConstants.*;
 
 public class SwerveModule extends LoggedSubsystem<SwerveModuleLogInputs> {
     private final TalonFX driveMotor;
@@ -24,7 +26,7 @@ public class SwerveModule extends LoggedSubsystem<SwerveModuleLogInputs> {
     private boolean initializedOffset = false;
 
     public SwerveModule(SwerveDrive.Module number, int driveMotorPort, int angleMotorPort, int encoderPort, int offset, boolean driveInverted,
-                        boolean angleInverted, boolean angleSensorPhase, double[] motionMagicConfigs) {
+                        boolean angleInverted, double[] motionMagicConfigs) {
         super(new SwerveModuleLogInputs());
         this.number = number;
         this.offset = offset;
@@ -39,20 +41,34 @@ public class SwerveModule extends LoggedSubsystem<SwerveModuleLogInputs> {
         driveMotor.setInverted(driveInverted);
         driveMotor.setNeutralMode(NeutralMode.Brake);
         driveMotor.selectProfileSlot(1, 0);
-        driveMotor.configNeutralDeadband(0.175);
-//        driveMotor.enableVoltageCompensation(true);
-//        driveMotor.configVoltageCompSaturation(NOMINAL_VOLTAGE);
+        driveMotor.configNeutralDeadband(NEUTRAL_DEADBAND);
+        driveMotor.configSupplyCurrentLimit(SUPPLY_CURRENT_LIMIT_CONFIG);
+        driveMotor.configStatorCurrentLimit(STATOR_CURRENT_LIMIT_CONFIG);
+        driveMotor.configGetSupplyCurrentLimit(SUPPLY_CURRENT_LIMIT_CONFIG);
+        driveMotor.configGetStatorCurrentLimit(STATOR_CURRENT_LIMIT_CONFIG);
+        driveMotor.configIntegratedSensorInitializationStrategy(SensorInitializationStrategy.BootToZero);
+        driveMotor.setStatusFramePeriod(1, 50);
+        driveMotor.setStatusFramePeriod(3, 500);
 
         angleMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, TALON_TIMEOUT);
         angleMotor.configFeedbackNotContinuous(false, TALON_TIMEOUT);
         angleMotor.setInverted(angleInverted);
-        angleMotor.setSensorPhase(angleSensorPhase);
+        angleMotor.configSupplyCurrentLimit(SUPPLY_CURRENT_LIMIT_CONFIG);
+        angleMotor.configStatorCurrentLimit(STATOR_CURRENT_LIMIT_CONFIG);
+        angleMotor.configGetSupplyCurrentLimit(SUPPLY_CURRENT_LIMIT_CONFIG);
+        angleMotor.configGetStatorCurrentLimit(STATOR_CURRENT_LIMIT_CONFIG);
+        angleMotor.setStatusFramePeriod(1, 50);
+        angleMotor.setStatusFramePeriod(3, 500);
+
+        for (int i = 5; i <= 17; i++) {
+            driveMotor.setStatusFramePeriod(i, 500);
+            angleMotor.setStatusFramePeriod(i, 500);
+        }
+
         configMotionMagic(motionMagicConfigs);
 
         angleMotor.setNeutralMode(NeutralMode.Brake);
         angleMotor.selectProfileSlot(0, 0);
-//        angleMotor.enableVoltageCompensation(true);
-//        angleMotor.configVoltageCompSaturation(NOMINAL_VOLTAGE);
 
         encoder = new DutyCycleEncoder(encoderPort);
 
@@ -81,6 +97,12 @@ public class SwerveModule extends LoggedSubsystem<SwerveModuleLogInputs> {
         angleMotor.configClosedLoopPeakOutput(0, motionMagicConfigs[MotionMagicConfig.ClosedLoopPeakOutput.index]);
     }
 
+    /**
+     * Sets the module to the desired state.
+     *
+     * @param speed the desired speed of the module. [-1, 1]
+     * @param angle the desired angle of the module.
+     */
     public void set(double speed, Rotation2d angle) {
         loggerInputs.dSetpoint = speed * MAX_VELOCITY_METERS_PER_SECOND;
 
@@ -95,38 +117,91 @@ public class SwerveModule extends LoggedSubsystem<SwerveModuleLogInputs> {
         angleMotor.set(ControlMode.MotionMagic, loggerInputs.aPosition + toFalconTicks(error));
     }
 
+    /**
+     * Converts the motor position to the angle of the module in the same coordinate system.
+     *
+     * @param ticks the position of the motor. [ticks]
+     * @return the angle of the module.
+     */
     public Rotation2d toWheelAbsoluteAngle(double ticks) {
         return new Rotation2d(((ticks / TICKS_PER_ROTATION) * 2 * Math.PI * ANGLE_GEAR_RATIO) % (2 * Math.PI));
     }
 
+    /**
+     * Converts the angle of the module to the motor position in the same coordinate system.
+     *
+     * @param angle the angle of the module.
+     * @return the position of the motor. [ticks]
+     */
     public int toFalconTicks(Rotation2d angle) {
         return (int) (((angle.getDegrees() / 360) * TICKS_PER_ROTATION) / ANGLE_GEAR_RATIO);
     }
 
+    /**
+     * Converts the absolute encoder position to the position
+     * of the falcon in the same coordinate system.
+     *
+     * @param encoder the position of the encoder. [cycles]
+     * @return the position of the falcon. [ticks]
+     */
     public int absoluteEncoderToAbsoluteFalcon(double encoder) {
         return (int) (encoder * TICKS_PER_ROTATION / ANGLE_GEAR_RATIO);
     }
 
+    /**
+     * Gets the angle of the module.
+     *
+     * @return the angle of the module.
+     */
     public Rotation2d getAngle() {
         return loggerInputs.aAngle;
     }
 
+    /**
+     * Gets the absolute encoder position.
+     *
+     * @return the absolute encoder position. [ticks]
+     */
     public int getEncoderTicks() {
         return toFalconTicks(loggerInputs.encoderAngle);
     }
 
+    /**
+     * Gets the state of the module.
+     *
+     * @return the state of the module, comprised of speed [m/s] and angle.
+     */
     public SwerveModuleState getState() {
-        return new SwerveModuleState(loggerInputs.dSetpoint, getAngle());
+        return new SwerveModuleState(loggerInputs.dVelocity, getAngle());
     }
 
+    /**
+     * Stops the module entirely.
+     */
     public void stop() {
         angleMotor.neutralOutput();
         driveMotor.neutralOutput();
     }
 
+    /**
+     * Vroom vroom.
+     * Used to break out modules.
+     */
     public void vroom() {
         driveMotor.set(ControlMode.PercentOutput, 1);
-        angleMotor.set(ControlMode.PercentOutput, 0.5);
+        angleMotor.set(ControlMode.PercentOutput, 0.2);
+    }
+
+    /**
+     * Gets the position of the module.
+     * This is the relative position measured by the falcon. It's alright
+     * to use this position because it is always differentiated.
+     *
+     * @return the position of the module.
+     * Comprised of the distance [m], and the angle.
+     */
+    public SwerveModulePosition getPosition() {
+        return new SwerveModulePosition(loggerInputs.moduleDistance, getAngle());
     }
 
     @Override
@@ -139,16 +214,20 @@ public class SwerveModule extends LoggedSubsystem<SwerveModuleLogInputs> {
 
         loggerInputs.dVelocity = ((driveMotor.getSelectedSensorVelocity() / TICKS_PER_ROTATION) * (Math.PI * WHEEL_DIAMETER)) * 10;
         loggerInputs.dCurrent = driveMotor.getSupplyCurrent();
+        loggerInputs.moduleDistance = (driveMotor.getSelectedSensorPosition() / TICKS_PER_ROTATION) * WHEEL_DIAMETER * Math.PI * DRIVE_REDUCTION;
+    }
+
+    public void initializeOffset() {
+        double newPosition = absoluteEncoderToAbsoluteFalcon(encoder.getAbsolutePosition()) - offset;
+        angleMotor.setSelectedSensorPosition(newPosition);
+        initializedOffset = true;
     }
 
     @Override
     public void periodic() {
         if (!initializedOffset && encoder.isConnected()) {
-            double newPosition = absoluteEncoderToAbsoluteFalcon(encoder.getAbsolutePosition()) - offset;
-            angleMotor.setSelectedSensorPosition(newPosition);
-            initializedOffset = true;
+            initializeOffset();
         }
-
         if (SmartDashboard.getBoolean("Swerve Tune Motion Magic", false)) {
             angleMotor.updatePIDF(0,
                     SmartDashboard.getNumber(number.name() + "_kP", motionMagicConfigs[MotionMagicConfig.Kp.index]),

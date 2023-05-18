@@ -15,6 +15,7 @@ public class SwerveModuleLogInputs implements LoggableInputs {
     public double dVelocity = 0;
     public double dSetpoint = 0;
     public double dCurrent = 0;
+    public double moduleDistance = 0;
 
     public SwerveModuleLogInputs() {
     }
@@ -31,6 +32,7 @@ public class SwerveModuleLogInputs implements LoggableInputs {
         table.put("dVelocity", dVelocity);
         table.put("dSetpoint", dSetpoint);
         table.put("dCurrent", dCurrent);
+        table.put("moduleDistance", moduleDistance);
     }
 
     @Override
@@ -42,5 +44,6 @@ public class SwerveModuleLogInputs implements LoggableInputs {
 
         dVelocity = table.getDouble("dVelocity", dVelocity);
         dCurrent = table.getDouble("dCurrent", dCurrent);
+        moduleDistance = table.getDouble("moduleDistance", moduleDistance);
     }
 }

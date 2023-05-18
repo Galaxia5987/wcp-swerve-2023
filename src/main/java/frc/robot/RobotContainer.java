@@ -1,19 +1,20 @@
 package frc.robot;
 
-import com.pathplanner.lib.PathPlanner;
-import edu.wpi.first.hal.PowerDistributionJNI;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.autonomous.PPSwerveControllerCommand;
-import frc.robot.subsystems.drivetrain.commands.DriveJoysticks;
+import frc.robot.subsystems.drivetrain.SwerveDrive;
+import frc.robot.subsystems.drivetrain.commands.JoystickDrive;
+import frc.robot.subsystems.gyroscope.Gyroscope;
 
 public class RobotContainer {
     private static RobotContainer INSTANCE = null;
+
+    private final SwerveDrive swerveDrive = SwerveDrive.getInstance();
+    private final Gyroscope gyroscope = Gyroscope.getInstance();
+
     private final XboxController xboxController = new XboxController(0);
     private final Joystick leftJoystick = new Joystick(1);
     private final Joystick rightJoystick = new Joystick(2);
@@ -37,15 +38,11 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        Robot.swerveSubsystem.setDefaultCommand(new DriveJoysticks(leftJoystick, rightJoystick));
-//        Robot.swerveSubsystem.setDefaultCommand(new DriveXboxController(xboxController));
-//        Robot.swerveSubsystem.setDefaultCommand(new RunCommand(Robot.swerveSubsystem::vroom){{ addRequirements(Robot.swerveSubsystem); }});
-//        Robot.swerveSubsystem.setDefaultCommand(new Test());
+        swerveDrive.setDefaultCommand(new JoystickDrive(leftJoystick, rightJoystick));
     }
 
     private void configureButtonBindings() {
-        leftTrigger.whileActiveOnce(new InstantCommand(Robot.gyroscope::resetAngle));
-//        rb.whenPressed(new InstantCommand(Robot.gyroscope::resetAngle));
+        leftTrigger.onTrue(new InstantCommand(gyroscope::resetYaw));
     }
 
 
@@ -55,18 +52,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        var trajectory = PathPlanner.loadPath("Big Path", 4, 2);
-        Robot.swerveSubsystem.setFieldOriented(false);
-        Robot.swerveSubsystem.resetOdometry(trajectory.getInitialPose());
-        Robot.gyroscope.resetAngle(trajectory.getInitialPose().getRotation());
-        return new PPSwerveControllerCommand(
-                trajectory,
-                Robot.swerveSubsystem::getPose,
-                new PIDController(Constants.AUTO_XY_Kp, Constants.AUTO_XY_Ki, Constants.AUTO_XY_Kd),
-                new PIDController(Constants.AUTO_XY_Kp, Constants.AUTO_XY_Ki, Constants.AUTO_XY_Kd),
-                new PIDController(Constants.AUTO_ROTATION_Kp, Constants.AUTO_ROTATION_Ki, Constants.AUTO_ROTATION_Kd),
-                Robot.swerveSubsystem::drive,
-                Robot.swerveSubsystem
-        );
+        return null;
     }
 }
