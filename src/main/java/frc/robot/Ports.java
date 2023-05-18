@@ -25,6 +25,12 @@ public final class Ports {
     public static boolean REAR_RIGHT_DRIVE_INVERTED = true;
     public static boolean REAR_RIGHT_ANGLE_INVERTED = true;
 
+    public static class GripperPorts {
+        public static int GRIPPER_MAIN_MOTOR = 0;
+        public static int GRIPPER_SPIN_MOTOR_LEFT = 0;
+        public static int GRIPPER_SPIN_MOTOR_RIGHT = 0;
+    }
+
     public static class UI {
         public static final int JOYSTICK_TRIGGER = 1;
         public static final int JOYSTICK_TOP_BOTTOM_BUTTON = 2;
