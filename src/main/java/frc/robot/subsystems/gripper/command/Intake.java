@@ -21,8 +21,7 @@ public class Intake extends CommandBase {
         if (intake) {
             gripper.setMainMotorPower(mainMotorPower);
             gripper.setSpinPower(spinPower);
-        }
-        else {
+        } else {
             gripper.setSpinPower(-spinPower);
         }
     }

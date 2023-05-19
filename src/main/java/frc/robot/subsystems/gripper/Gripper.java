@@ -35,26 +35,26 @@ public class Gripper extends SubsystemBase {
         auxSpinMotor.setInverted(InvertType.OpposeMaster);
     }
 
-    public static Gripper getInstance(){
-        if (INSTANCE==null){
+    public static Gripper getInstance() {
+        if (INSTANCE == null) {
             INSTANCE = new Gripper();
         }
         return INSTANCE;
     }
 
-    public void setMainMotorPower(double power){
+    public void setMainMotorPower(double power) {
         mainMotor.set(ControlMode.PercentOutput, power);
     }
 
-    public double getMainMotorPower(){
+    public double getMainMotorPower() {
         return mainMotor.getMotorOutputPercent();
     }
 
-    public void setSpinPower(double power){
+    public void setSpinPower(double power) {
         mainSpinMotor.set(ControlMode.PercentOutput, power);
     }
 
-    public double getSpinPower(){
+    public double getSpinPower() {
         return mainSpinMotor.getMotorOutputPercent();
     }
 }

@@ -11,7 +11,7 @@ public class Elevator extends SubsystemBase {
     private final TalonFX motor = new TalonFX(Ports.ELE_MOTOR);
     private final UnitModel unitModel = new UnitModel(ElevatorConstants.TICKS_PER_METER);
 
-    public Elevator(){
+    public Elevator() {
         motor.setInverted(ElevatorConstants.INVERT_TYPE);
         motor.enableVoltageCompensation(true);
         motor.configVoltageCompSaturation(ElevatorConstants.VOLT_COMP_SATURATION);
