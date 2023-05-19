@@ -2,6 +2,8 @@ package frc.robot;
 
 public final class Ports {
 
+    public static final int ELE_MOTOR = 13;
+
     public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR_ID = 5;
     public static final int FRONT_LEFT_MODULE_STEER_MOTOR_ID = 2;
     public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR_ID = 3;
