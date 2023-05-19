@@ -1,6 +1,6 @@
 package frc.robot.subsystems.gripper;
 
-public class GripperConstants {
+public class GripperConstants { //TODO: check
     public static final double FALCON_TICKS_PER_ROTATION = 2048;
     public static final double MAIN_MOTOR_GEARING = 0;
     public static final double SPIN_MOTOR_LEFT_GEARING = 0;

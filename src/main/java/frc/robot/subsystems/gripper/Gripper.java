@@ -26,7 +26,7 @@ public class Gripper extends SubsystemBase {
         mainSpinMotor.enableVoltageCompensation(true);
         mainSpinMotor.configVoltageCompSaturation(GripperConstants.VOLT_COMP_SATURATION);
         mainSpinMotor.setNeutralMode(NeutralMode.Coast);
-        mainSpinMotor.setInverted(true);
+        mainSpinMotor.setInverted(true); //TODO: check direction
 
         auxSpinMotor.enableVoltageCompensation(true);
         auxSpinMotor.configVoltageCompSaturation(GripperConstants.VOLT_COMP_SATURATION);
