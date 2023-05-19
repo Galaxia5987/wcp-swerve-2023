@@ -13,6 +13,7 @@ public class GripperDefaultCommand extends CommandBase {
         this.mainMotorPower = mainMotorPower;
         this.spinPower = spinPower;
         this.intake = intake;
+        addRequirements(gripper);
     }
 
     @Override
