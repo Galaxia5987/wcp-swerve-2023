@@ -3,13 +3,13 @@ package frc.robot.subsystems.gripper.command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.gripper.Gripper;
 
-public class GripperDefaultCommand extends CommandBase {
+public class Intake extends CommandBase {
     private final Gripper gripper = new Gripper();
     private final double mainMotorPower;
     private final double spinPower;
     private final boolean intake;
 
-    public GripperDefaultCommand(double mainMotorPower, double spinPower, boolean intake) {
+    public Intake(double mainMotorPower, double spinPower, boolean intake) {
         this.mainMotorPower = mainMotorPower;
         this.spinPower = spinPower;
         this.intake = intake;
