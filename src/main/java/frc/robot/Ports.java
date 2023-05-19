@@ -27,8 +27,8 @@ public final class Ports {
 
     public static class GripperPorts {
         public static int GRIPPER_MAIN_MOTOR = 0;
-        public static int GRIPPER_SPIN_MOTOR_LEFT = 0;
-        public static int GRIPPER_SPIN_MOTOR_RIGHT = 0;
+        public static int GRIPPER_MAIN_SPIN_MOTOR = 0;
+        public static int GRIPPER_AUX_SPIN_MOTOR = 0;
     }
 
     public static class UI {
