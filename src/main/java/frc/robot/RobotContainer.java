@@ -49,15 +49,15 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         lb.onTrue(new InstantCommand(gyroscope::resetYaw));
-        xboxRightTrigger.whileTrue(new InstantCommand(()-> elevator.setPower(-xboxController.getRightTriggerAxis()* ElevatorConstants.POWER_MULTIPLIER)));
+        xboxRightTrigger.whileTrue(new InstantCommand(()-> elevator.setPower(-xboxController.getRightTriggerAxis()* ElevatorConstants.UP_POWER_MULTIPLIER)));
         xboxRightTrigger.whileFalse(new InstantCommand(()-> elevator.setPower(0)));
-        xboxLeftTrigger.whileTrue(new InstantCommand(()-> elevator.setPower(xboxController.getLeftTriggerAxis()* ElevatorConstants.POWER_MULTIPLIER)));
+        xboxLeftTrigger.whileTrue(new InstantCommand(()-> elevator.setPower(xboxController.getLeftTriggerAxis()* ElevatorConstants.DOWN_POWER_MULTIPLIER)));
         xboxLeftTrigger.whileFalse(new InstantCommand(()-> elevator.setPower(0)));
 //        a.whileTrue(new Intake(0.1, 0.5, true));
         a.toggleOnTrue(new Intake(0.1, 0.5, true));
 //        b.whileTrue(new Intake(0.1, 0.5, false));
         b.toggleOnTrue(new Intake(0.1, 0.7, false));
-        x.onTrue(new InstantCommand(swerveDrive::printEncoderValues));
+        
     }
 
 
