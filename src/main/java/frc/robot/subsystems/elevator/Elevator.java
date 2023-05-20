@@ -27,8 +27,20 @@ public class Elevator extends SubsystemBase {
         return INSTANCE;
     }
 
+    /**
+     * Get the position of the elevator
+     * @return [m]
+     */
     public double getPosition() {
         return unitModel.toUnits(motor.getSelectedSensorPosition());
+    }
+
+    /**
+     * Set the position of the elevator
+     * @param position [m]
+     */
+    public void setPosition(double position){
+        motor.setSelectedSensorPosition(unitModel.toTicks(position));
     }
 
     public void setPower(double power) {
