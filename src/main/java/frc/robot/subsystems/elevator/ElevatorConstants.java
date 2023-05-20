@@ -8,6 +8,7 @@ public class ElevatorConstants {
     public static final int FALCON_TIMEOUT = 10;
     public static final double DRUM_RADIUS = 0.03; // Radius of the elevator drum. [m]
     public static final double TICKS_PER_METER = 2 * Math.PI * DRUM_RADIUS / 2048; // [tick]
+    public static final double POWER_MULTIPLIER = 0.5;
 
 
     public static final double kP = 0;
