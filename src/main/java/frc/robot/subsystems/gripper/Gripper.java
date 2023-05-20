@@ -45,6 +45,9 @@ public class Gripper extends SubsystemBase {
     public void setMainMotorPower(double power) {
         mainMotor.set(ControlMode.PercentOutput, power);
     }
+    public void setMainMotorPower(double power, double timeOut) {
+        mainMotor.set(ControlMode.PercentOutput, power);
+    }
 
     public double getMainMotorPower() {
         return mainMotor.getMotorOutputPercent();
