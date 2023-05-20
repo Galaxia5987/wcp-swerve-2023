@@ -3,6 +3,7 @@ package frc.robot.subsystems.elevator.command;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.utils.Utils;
 
 public class XboxControl extends CommandBase {
     private final Elevator elevator = Elevator.getInstance();
@@ -15,6 +16,6 @@ public class XboxControl extends CommandBase {
 
     @Override
     public void execute() {
-        elevator.setPower(-xbox.getLeftY());
+        elevator.setPower(-Utils.deadband(xbox.getLeftY(), 0.05));
     }
 }
