@@ -18,4 +18,9 @@ public class XboxControl extends CommandBase {
     public void execute() {
         elevator.setPower(-Utils.deadband(xbox.getLeftY(), 0.05));
     }
+
+    @Override
+    public void end(boolean interrupted) {
+        elevator.setPower(0);
+    }
 }
