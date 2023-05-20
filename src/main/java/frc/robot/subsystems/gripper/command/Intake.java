@@ -20,9 +20,10 @@ public class Intake extends CommandBase {
     public void execute() {
         if (intake) {
             gripper.setMainMotorPower(mainMotorPower);
-            gripper.setSpinPower(spinPower);
-        } else {
             gripper.setSpinPower(-spinPower);
+        } else {
+            gripper.setSpinPower(spinPower);
+            gripper.setMainMotorPower(-mainMotorPower);
         }
     }
 
