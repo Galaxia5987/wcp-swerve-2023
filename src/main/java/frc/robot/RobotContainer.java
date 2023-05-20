@@ -46,7 +46,7 @@ public class RobotContainer {
 
     private void configureDefaultCommands() {
         swerveDrive.setDefaultCommand(new XboxDrive(swerveDrive, xboxController));
-        elevator.setDefaultCommand(new HoldInPlace());
+//        elevator.setDefaultCommand(new HoldInPlace());
     }
 
     private void configureButtonBindings() {
