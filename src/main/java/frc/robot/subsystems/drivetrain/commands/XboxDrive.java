@@ -22,7 +22,7 @@ public class XboxDrive extends CommandBase {
     public void execute() {
         double vx = -xboxController.getLeftY();
         double vy = -xboxController.getLeftX();
-        double omega = -xboxController.getRightX();
+        double omega = -0.7 * xboxController.getRightX();
 
         double magnitude = Math.hypot(vx, vy);
         double angle = Math.atan2(vy, vx);
