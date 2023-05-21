@@ -18,6 +18,7 @@ public class Elevator extends SubsystemBase {
         motor.config_kP(0, ElevatorConstants.kP, ElevatorConstants.FALCON_TIMEOUT);
         motor.config_kI(0, ElevatorConstants.kI, ElevatorConstants.FALCON_TIMEOUT);
         motor.config_kD(0, ElevatorConstants.kD, ElevatorConstants.FALCON_TIMEOUT);
+        motor.config_kF(0, ElevatorConstants.kF, ElevatorConstants.FALCON_TIMEOUT);
     }
 
     public static Elevator getInstance() {
@@ -32,19 +33,27 @@ public class Elevator extends SubsystemBase {
      * @return [m]
      */
     public double getPosition() {
-        return unitModel.toUnits(motor.getSelectedSensorPosition());
+        return motor.getSelectedSensorPosition();
     }
 
     /**
      * Set the position of the elevator
-     * @param position [m]
+     * @param position [ticks]
      */
     public void setPosition(double position){
-        motor.setSelectedSensorPosition(unitModel.toTicks(position));
+        motor.set(ControlMode.Position, position);
     }
 
     public void setPower(double power) {
         motor.set(ControlMode.PercentOutput, power);
+    }
+
+    public void resetEncoder(){
+        motor.setSelectedSensorPosition(0);
+    }
+
+    public void printPosition(){
+        System.out.println(getPosition());
     }
 
 }
