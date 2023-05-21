@@ -12,8 +12,9 @@ public class ElevatorConstants {
     public static final double DOWN_POWER_MULTIPLIER = 0.5;
 
 
-    public static final double kP = 0;
+    public static final double kP = 0.005;
     public static final double kI = 0;
     public static final double kD = 0;
+    public static final double kF = 0.01;
 
 }
