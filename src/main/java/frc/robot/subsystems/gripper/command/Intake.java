@@ -23,6 +23,5 @@ public class Intake extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         gripper.setSpinPower(0);
-        gripper.setMainMotorPower(0);
     }
 }
