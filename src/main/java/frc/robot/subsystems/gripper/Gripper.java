@@ -26,7 +26,7 @@ public class Gripper extends SubsystemBase {
         mainSpinMotor.enableVoltageCompensation(true);
         mainSpinMotor.configVoltageCompSaturation(GripperConstants.VOLT_COMP_SATURATION);
         mainSpinMotor.setNeutralMode(NeutralMode.Coast);
-        mainSpinMotor.setInverted(true); //TODO: check direction
+        mainSpinMotor.setInverted(true);
 
         auxSpinMotor.enableVoltageCompensation(true);
         auxSpinMotor.configVoltageCompSaturation(GripperConstants.VOLT_COMP_SATURATION);
@@ -45,6 +45,7 @@ public class Gripper extends SubsystemBase {
     public void setMainMotorPower(double power) {
         mainMotor.set(ControlMode.PercentOutput, power);
     }
+
     public void setMainMotorPower(double power, double timeOut) {
         mainMotor.set(ControlMode.PercentOutput, power);
     }
@@ -59,5 +60,25 @@ public class Gripper extends SubsystemBase {
 
     public double getSpinPower() {
         return mainSpinMotor.getMotorOutputPercent();
+    }
+
+    public double getPosition(){
+        return mainMotor.getSelectedSensorPosition();
+    }
+
+    public void setPosition(double position){
+        mainMotor.set(ControlMode.Position, position);
+    }
+
+    public void resetEncoder(){
+        mainMotor.setSelectedSensorPosition(0);
+    }
+
+//    public void sing(){
+//        mainMotor.set(ControlMode.MusicTone, );
+//    }
+
+    public void printValues(double value){
+        System.out.println(getPosition());
     }
 }

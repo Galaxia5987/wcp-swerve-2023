@@ -8,7 +8,7 @@ public class GripperConstants {
 
     public static final double VOLT_COMP_SATURATION = 12;
     public static final int FALCON_TIMEOUT = 10; //[ms]
-    public static final double kP = 0;
+    public static final double kP = 0.1;
     public static final double kI = 0;
     public static final double kD = 0;
 
