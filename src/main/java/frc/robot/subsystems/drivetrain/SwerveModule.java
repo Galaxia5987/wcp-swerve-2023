@@ -34,29 +34,29 @@ public class SwerveModule extends LoggedSubsystem<SwerveModuleLogInputs> {
         driveMotor = new TalonFX(driveMotorPort);
         angleMotor = new PIDTalon(angleMotorPort);
 
-        driveMotor.configFactoryDefault();
-        angleMotor.configFactoryDefault();
+        driveMotor.configFactoryDefault(TALON_TIMEOUT);
+        angleMotor.configFactoryDefault(TALON_TIMEOUT);
 
         driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, TALON_TIMEOUT);
         driveMotor.setInverted(driveInverted);
         driveMotor.setNeutralMode(NeutralMode.Brake);
         driveMotor.selectProfileSlot(1, 0);
-        driveMotor.configNeutralDeadband(NEUTRAL_DEADBAND);
-        driveMotor.configSupplyCurrentLimit(SUPPLY_CURRENT_LIMIT_CONFIG);
-        driveMotor.configStatorCurrentLimit(STATOR_CURRENT_LIMIT_CONFIG);
-        driveMotor.configGetSupplyCurrentLimit(SUPPLY_CURRENT_LIMIT_CONFIG);
-        driveMotor.configGetStatorCurrentLimit(STATOR_CURRENT_LIMIT_CONFIG);
-        driveMotor.configIntegratedSensorInitializationStrategy(SensorInitializationStrategy.BootToZero);
+        driveMotor.configNeutralDeadband(NEUTRAL_DEADBAND, TALON_TIMEOUT);
+        driveMotor.configSupplyCurrentLimit(SUPPLY_CURRENT_LIMIT_CONFIG, TALON_TIMEOUT);
+        driveMotor.configStatorCurrentLimit(STATOR_CURRENT_LIMIT_CONFIG, TALON_TIMEOUT);
+        driveMotor.configGetSupplyCurrentLimit(SUPPLY_CURRENT_LIMIT_CONFIG, TALON_TIMEOUT);
+        driveMotor.configGetStatorCurrentLimit(STATOR_CURRENT_LIMIT_CONFIG, TALON_TIMEOUT);
+        driveMotor.configIntegratedSensorInitializationStrategy(SensorInitializationStrategy.BootToZero, TALON_TIMEOUT);
         driveMotor.setStatusFramePeriod(1, 50);
         driveMotor.setStatusFramePeriod(3, 500);
 
         angleMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, TALON_TIMEOUT);
         angleMotor.configFeedbackNotContinuous(false, TALON_TIMEOUT);
         angleMotor.setInverted(angleInverted);
-        angleMotor.configSupplyCurrentLimit(SUPPLY_CURRENT_LIMIT_CONFIG);
-        angleMotor.configStatorCurrentLimit(STATOR_CURRENT_LIMIT_CONFIG);
-        angleMotor.configGetSupplyCurrentLimit(SUPPLY_CURRENT_LIMIT_CONFIG);
-        angleMotor.configGetStatorCurrentLimit(STATOR_CURRENT_LIMIT_CONFIG);
+        angleMotor.configSupplyCurrentLimit(SUPPLY_CURRENT_LIMIT_CONFIG, TALON_TIMEOUT);
+        angleMotor.configStatorCurrentLimit(STATOR_CURRENT_LIMIT_CONFIG, TALON_TIMEOUT);
+        angleMotor.configGetSupplyCurrentLimit(SUPPLY_CURRENT_LIMIT_CONFIG, TALON_TIMEOUT);
+        angleMotor.configGetStatorCurrentLimit(STATOR_CURRENT_LIMIT_CONFIG, TALON_TIMEOUT);
         angleMotor.setStatusFramePeriod(1, 50);
         angleMotor.setStatusFramePeriod(3, 500);
 
