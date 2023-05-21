@@ -23,7 +23,12 @@ public class TriggerControl extends CommandBase {
 
     @Override
     public void execute() {
-        elevator.setPower((xbox.getLeftTriggerAxis()* ElevatorConstants.DOWN_POWER_MULTIPLIER)-(xbox.getRightTriggerAxis()*ElevatorConstants.UP_POWER_MULTIPLIER));
+        if (elevator.getPosition()>130845.0){
+            elevator.setPower((-(xbox.getRightTriggerAxis()*ElevatorConstants.UP_POWER_MULTIPLIER)));
+        }
+        else {
+            elevator.setPower((xbox.getLeftTriggerAxis() * ElevatorConstants.DOWN_POWER_MULTIPLIER) - (xbox.getRightTriggerAxis() * ElevatorConstants.UP_POWER_MULTIPLIER));
+        }
     }
 
     @Override
