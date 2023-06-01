@@ -52,12 +52,12 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        swerveDrive.setDefaultCommand(new XboxDrive(swerveDrive, xboxController2));
+        swerveDrive.setDefaultCommand(new XboxDrive(swerveDrive, xboxController1));
         elevator.setDefaultCommand(new TriggerControl(xboxController1));
     }
 
     private void configureButtonBindings() {
-        lb2.onTrue(new InstantCommand(gyroscope::resetYaw));
+        lb.onTrue(new InstantCommand(gyroscope::resetYaw));
 
         a.whileTrue(new Intake(0.4, 1191.0));
         b.whileTrue(new Outtake(0.1, 0.4));
