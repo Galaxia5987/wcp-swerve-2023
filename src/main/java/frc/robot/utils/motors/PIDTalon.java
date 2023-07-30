@@ -1,10 +1,10 @@
 package frc.robot.utils.motors;
 
 import com.ctre.phoenix.ErrorCode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import frc.robot.utils.Utils;
 
-public class PIDTalon extends WPI_TalonFX {
+public class PIDTalon extends TalonFX {
     public static final double EPSILON = 1e-9;
 
     private double lastKp;
@@ -38,7 +38,7 @@ public class PIDTalon extends WPI_TalonFX {
         lastMotionMaxAcceleration = 0;
     }
 
-    public ErrorCode updatePID(int slot, double kP, double kI, double kD, double kF) {
+    public ErrorCode updatePIDF(int slot, double kP, double kI, double kD, double kF) {
         ErrorCode[] errorCodes = new ErrorCode[]{
                 ErrorCode.OK,
                 ErrorCode.OK,

@@ -41,4 +41,8 @@ public class Units {
     public static double metersToFeet(double meters) {
         return metersToInches(meters) / 12.0;
     }
+
+    public static double metersPerSecondToRps(double value, double radius) {
+        return value / (2 * Math.PI * radius);
+    }
 }
