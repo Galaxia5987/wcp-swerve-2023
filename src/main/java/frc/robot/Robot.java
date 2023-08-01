@@ -5,13 +5,19 @@
 package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.server.PathPlannerServer;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.drivetrain.SwerveConstants;
+import frc.robot.subsystems.drivetrain.SwerveDrive;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -25,6 +31,7 @@ public class Robot extends LoggedRobot {
     public PowerDistribution pdp = new PowerDistribution();
     private RobotContainer robotContainer;
     private Command autonomousCommand;
+    private final Timer timer = new Timer();
 
     /**
      * This function is run when the robot is first started up and should be used for any
@@ -32,21 +39,26 @@ public class Robot extends LoggedRobot {
      */
     @Override
     public void robotInit() {
-        if (debug) {
-            NetworkTableConstant.initializeAllConstants();
+        PathPlannerServer.startServer(5811);
+        robotContainer = RobotContainer.getInstance();
+
+        Logger.getInstance().recordMetadata("ProjectName", "Sim-bot-2023"); // Set a metadata value
+
+        if (isReal()) {
+            Logger.getInstance().addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
+            Logger.getInstance().addDataReceiver(new WPILOGWriter("home/lvuser")); // Publish data to NetworkTables
+            new PowerDistribution(1, PowerDistribution.ModuleType.kRev); // Enables power distribution logging
+        } else {
+            Logger.getInstance().addDataReceiver(new NT4Publisher());
         }
 
-        robotContainer = RobotContainer.getInstance();
-        autonomousCommand = robotContainer.getAutonomousCommand();
+        Logger.getInstance().start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
 
-        setUseTiming(isReal()); // Run as fast as possible during replay
-        LoggedNetworkTables.getInstance().addTable("/SmartDashboard"); // Log & replay "SmartDashboard" values (no tables are logged by default).
-        Logger.getInstance().recordMetadata("ProjectName", "Recode2022"); // Set a metadata value
+        timer.start();
+        timer.reset();
 
-        Logger.getInstance().addDataReceiver(new ByteLogReceiver("/media/sda1/")); // Log to USB stick (name will be selected automatically)
-        Logger.getInstance().addDataReceiver(new LogSocketServer(5804)); // Provide log data over the network, viewable in Advantage Scope.
-
-        SmartDashboard.putBoolean("Is Debug", debug);
+        while (!SwerveDrive.getInstance().encodersConnected()); //TODO: change back to other method
+        SwerveDrive.getInstance().updateOffsets(SwerveConstants.OFFSETS);
     }
 
     /**

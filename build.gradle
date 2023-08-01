@@ -93,6 +93,7 @@ dependencies {
 
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
 
+    annotationProcessor "org.littletonrobotics.akit.junction:junction-autolog:2.2.4"
 }
 
 // Simulation configuration (e.g. environment variables).
