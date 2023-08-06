@@ -3,6 +3,7 @@ package frc.robot.subsystems.drivetrain;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.*;
@@ -28,6 +29,8 @@ public class SwerveDrive extends SubsystemBase {
 
     private Derivative acceleration = new Derivative(0, 0);
     private final LinearFilter accelFilter = LinearFilter.movingAverage(5);
+
+    private final SlewRateLimiter accelerationFilter = new SlewRateLimiter(4, 1, 0);
 
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
             SwerveConstants.wheelPositions[0],
@@ -170,13 +173,13 @@ public class SwerveDrive extends SubsystemBase {
      * @param chassisSpeeds Desired chassis speeds.
      * @param fieldOriented Should the drive be field oriented.
      */
-    public void drive(ChassisSpeeds chassisSpeeds, boolean fieldOriented) {
+    public void drive(ChassisSpeeds chassisSpeeds, boolean fieldOriented) { //TODO: fix field oriented option
         loggerInputs.desiredSpeeds = Utils.chassisSpeedsToArray(chassisSpeeds);
 
 //        if (fieldOriented){
         chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                chassisSpeeds.vxMetersPerSecond,
-                chassisSpeeds.vyMetersPerSecond,
+                accelerationFilter.calculate(chassisSpeeds.vxMetersPerSecond), //TODO: check if acceleration filter works
+                accelerationFilter.calculate(chassisSpeeds.vyMetersPerSecond),
                 chassisSpeeds.omegaRadiansPerSecond,
                 new Rotation2d(getYaw())
         );
