@@ -1,6 +1,8 @@
 package frc.robot.subsystems.drivetrain;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.*;
@@ -8,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Ports;
 import frc.robot.Robot;
 import frc.robot.utils.Utils;
+import frc.robot.utils.math.differential.Derivative;
 import org.littletonrobotics.junction.Logger;
 
 
@@ -22,6 +25,9 @@ public class SwerveDrive extends SubsystemBase {
 
     private final PIDController pidController = new PIDController(SwerveConstants.OMEGA_kP, SwerveConstants.OMEGA_kI, SwerveConstants.OMEGA_kD);
     private boolean shouldKeepAngle = false;
+
+    private Derivative acceleration = new Derivative(0, 0);
+    private final LinearFilter accelFilter = LinearFilter.movingAverage(5);
 
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
             SwerveConstants.wheelPositions[0],
@@ -241,6 +247,11 @@ public class SwerveDrive extends SubsystemBase {
                                     currentModuleStates[3]
                             ))[i];
         }
+
+        loggerInputs.linearVelocity = Math.hypot(loggerInputs.currentSpeeds[0], loggerInputs.currentSpeeds[1]);
+
+        acceleration.update(loggerInputs.linearVelocity);
+        loggerInputs.acceleration = accelFilter.calculate(acceleration.get());
 
         loggerInputs.supplyCurrent =
                 modules[0].getSupplyCurrent() + modules[1].getSupplyCurrent() + modules[2].getSupplyCurrent() + modules[3].getStatorCurrent();

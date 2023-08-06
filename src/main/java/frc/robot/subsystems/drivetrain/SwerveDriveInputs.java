@@ -11,6 +11,9 @@ public class SwerveDriveInputs {
     public double[] currentSpeeds = {0, 0, 0};
     public double[] desiredSpeeds = {0, 0, 0};
 
+    public double linearVelocity = 0;
+    public double acceleration = 0;
+
     public double[] absolutePositions = new double[4];
 
     public double rawYaw;

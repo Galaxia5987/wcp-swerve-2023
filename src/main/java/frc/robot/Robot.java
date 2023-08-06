@@ -4,19 +4,22 @@
 
 package frc.robot;
 
-import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.server.PathPlannerServer;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.drivetrain.SwerveConstants;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
+import frc.robot.utils.TunableNumber;
+import frc.robot.utils.math.differential.BooleanTrigger;
+import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 /**
@@ -26,12 +29,13 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
  * project.
  */
 public class Robot extends LoggedRobot {
-    public static final AHRS navx = new AHRS(SPI.Port.kMXP);
     public static boolean debug = false;
-    public PowerDistribution pdp = new PowerDistribution();
+    private static final BooleanTrigger enabledTrigger = new BooleanTrigger(false, false);
+    private final Compressor compressor = new Compressor(PneumaticsModuleType.CTREPCM);
+    private final Timer timer = new Timer();
     private RobotContainer robotContainer;
     private Command autonomousCommand;
-    private final Timer timer = new Timer();
+    private BooleanTrigger encoderTrigger = new BooleanTrigger(false, false);
 
     /**
      * This function is run when the robot is first started up and should be used for any
@@ -39,6 +43,7 @@ public class Robot extends LoggedRobot {
      */
     @Override
     public void robotInit() {
+//        compressor.disable();
         PathPlannerServer.startServer(5811);
         robotContainer = RobotContainer.getInstance();
 
@@ -57,6 +62,10 @@ public class Robot extends LoggedRobot {
         timer.start();
         timer.reset();
 
+        Logger.getInstance().recordOutput("BottomArmPose", new Pose3d(new Translation3d(0, 0, 0), new Rotation3d(Math.toRadians(0), Math.toRadians(0), Math.toRadians(0))));
+        Logger.getInstance().recordOutput("TopArmPose", new Pose3d(new Translation3d(0, 0, 0), new Rotation3d(Math.toRadians(0), Math.toRadians(0), Math.toRadians(0))));
+        Logger.getInstance().recordOutput("IntakePose", new Pose3d(new Translation3d(0, 0, 0), new Rotation3d(Math.toRadians(-90), Math.toRadians(0), Math.toRadians(0))));
+
         while (!SwerveDrive.getInstance().encodersConnected()); //TODO: change back to other method
         SwerveDrive.getInstance().updateOffsets(SwerveConstants.OFFSETS);
     }
@@ -70,7 +79,10 @@ public class Robot extends LoggedRobot {
      */
     @Override
     public void robotPeriodic() {
+        TunableNumber.INSTANCES.forEach(TunableNumber::update);
         CommandScheduler.getInstance().run();
+
+        enabledTrigger.update(isEnabled());
     }
 
     /**
@@ -145,5 +157,9 @@ public class Robot extends LoggedRobot {
      */
     @Override
     public void testPeriodic() {
+    }
+
+    public static boolean justEnabled() {
+        return enabledTrigger.triggered();
     }
 }

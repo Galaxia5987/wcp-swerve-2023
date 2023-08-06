@@ -1,15 +1,37 @@
 package frc.robot;
 
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.subsystems.drivetrain.SwerveDrive;
+import frc.robot.subsystems.drivetrain.SwerveModule;
+import frc.robot.subsystems.drivetrain.command.JoystickDrive;
+import frc.robot.subsystems.drivetrain.command.XboxDrive;
 
 public class RobotContainer {
     private static RobotContainer INSTANCE = null;
+
+    private final SwerveDrive swerveDrive = SwerveDrive.getInstance();
+
+    private final Joystick joystick1 = new Joystick(1);
+    private final Joystick joystick2 = new Joystick(2);
+
+    private final XboxController xboxController = new XboxController(0);
+    private final JoystickButton lb = new JoystickButton(xboxController, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton rb = new JoystickButton(xboxController, XboxController.Button.kRightBumper.value);
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
      */
     private RobotContainer() {
-        // Configure the button bindings and default commands
         configureDefaultCommands();
         configureButtonBindings();
     }
@@ -22,13 +44,13 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-
+        swerveDrive.setDefaultCommand(new JoystickDrive(joystick1, joystick2));
     }
 
     private void configureButtonBindings() {
-
+        lb.onTrue(new InstantCommand(swerveDrive::resetGyro));
+        rb.onTrue(new InstantCommand(swerveDrive::resetPose));
     }
-
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
