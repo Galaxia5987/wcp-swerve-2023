@@ -147,7 +147,7 @@ public class SwerveDrive extends SubsystemBase {
         return odometry.getPoseMeters();
     }
 
-    public SwerveDriveKinematics getKinematics(){
+    public SwerveDriveKinematics getKinematics() {
         return kinematics;
     }
 
@@ -159,7 +159,7 @@ public class SwerveDrive extends SubsystemBase {
         odometry.resetPosition(new Rotation2d(getYaw()), modulePositions, pose);
     }
 
-    public boolean encodersConnected(){
+    public boolean encodersConnected() {
         boolean connected = true;
         for (int i = 0; i < 4; i++) {
             connected &= modules[i].encoderConnected();
