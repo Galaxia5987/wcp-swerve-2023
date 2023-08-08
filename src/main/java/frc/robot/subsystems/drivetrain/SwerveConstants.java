@@ -50,8 +50,6 @@ public class SwerveConstants {
     public static final double MAX_OMEGA_VELOCITY = MAX_X_Y_VELOCITY/ //[m/s]
             Math.sqrt((robotLength/2)*(robotLength/2)+(robotWidth/2)*(robotWidth/2));
 
-    public static final TalonFXInvertType CLOCKWISE = TalonFXInvertType.Clockwise;
-    public static final TalonFXInvertType COUNTER_CLOCKWISE = TalonFXInvertType.CounterClockwise;
 
     public static final double NEUTRAL_DEADBAND = 0.15;
     public static final double XBOX_DEADBAND = 0.15;

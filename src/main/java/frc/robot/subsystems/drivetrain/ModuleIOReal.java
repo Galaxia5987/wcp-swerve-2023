@@ -58,7 +58,7 @@ public class ModuleIOReal implements ModuleIO {
         driveMotor.setNeutralMode(NeutralMode.Brake);
         driveMotor.configSupplyCurrentLimit(SwerveConstants.SUPPLY_CURRENT_LIMIT);
         driveMotor.configStatorCurrentLimit(SwerveConstants.STATOR_CURRENT_LIMIT);
-        driveMotor.setInverted(SwerveConstants.CLOCKWISE);
+        driveMotor.setInverted(Constants.CLOCKWISE);
 
         angleMotor.enableVoltageCompensation(true);
         angleMotor.configVoltageCompSaturation(SwerveConstants.VOLT_COMP_SATURATION);
@@ -66,7 +66,7 @@ public class ModuleIOReal implements ModuleIO {
         angleMotor.setNeutralMode(NeutralMode.Brake);
         angleMotor.configSupplyCurrentLimit(SwerveConstants.SUPPLY_CURRENT_LIMIT);
         angleMotor.configStatorCurrentLimit(SwerveConstants.STATOR_CURRENT_LIMIT);
-        angleMotor.setInverted(SwerveConstants.CLOCKWISE);
+        angleMotor.setInverted(Constants.CLOCKWISE);
 
         angleMotor.config_kP(0, motionMagicConfigs[0], Constants.TALON_TIMEOUT);
         angleMotor.config_kI(0, motionMagicConfigs[1], Constants.TALON_TIMEOUT);
