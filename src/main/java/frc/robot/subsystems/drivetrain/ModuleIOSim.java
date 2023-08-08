@@ -8,7 +8,8 @@ import frc.robot.utils.math.AngleUtil;
 import frc.robot.utils.math.differential.Integral;
 
 public class ModuleIOSim implements ModuleIO {
-    private final FlywheelSim driveMotor;
+    private final FlywheelSim mainDriveMotor;
+    private final FlywheelSim auxDriveMotor;
     private final FlywheelSim angleMotor;
 
     private final PIDController angleFeedback;
@@ -25,15 +26,23 @@ public class ModuleIOSim implements ModuleIO {
     private Integral moduleDistance = new Integral(0, 0);
 
     public ModuleIOSim() {
-        driveMotor = new FlywheelSim(
-                DCMotor.getFalcon500(1),
+        mainDriveMotor = new FlywheelSim(
+                DCMotor.getNEO(1),
                 1 / SwerveConstants.DRIVE_REDUCTION,
-                SwerveConstants.DriveMotorMomentOfInertia);
+                SwerveConstants.DriveMotorMomentOfInertia
+        );
+
+        auxDriveMotor = new FlywheelSim(
+                DCMotor.getNEO(1),
+                1/SwerveConstants.DRIVE_REDUCTION,
+                SwerveConstants.DriveMotorMomentOfInertia
+        );
 
         angleMotor = new FlywheelSim(
-                DCMotor.getFalcon500(1),
+                DCMotor.getNeo550(1),
                 1 / SwerveConstants.ANGLE_REDUCTION,
-                SwerveConstants.AngleMotorMomentOfInertia);
+                SwerveConstants.AngleMotorMomentOfInertia
+        );
 
         angleFeedback = new PIDController(3.5, 0, 0, 0.02);
         velocityFeedback = new PIDController(0.5, 0, 0.00, 0.02);
@@ -41,13 +50,14 @@ public class ModuleIOSim implements ModuleIO {
 
     @Override
     public void updateInputs(SwerveModuleInputs inputs) {
-        driveMotor.update(0.02);
+        mainDriveMotor.update(0.02);
+        auxDriveMotor.update(0.02);
         angleMotor.update(0.02);
 
         currentAngle.update(angleMotor.getAngularVelocityRadPerSec());
 
         inputs.driveMotorAppliedVoltage = driveMotorAppliedVoltage;
-        inputs.driveMotorVelocity = driveMotor.getAngularVelocityRadPerSec();
+        inputs.driveMotorVelocity = mainDriveMotor.getAngularVelocityRadPerSec();
         inputs.driveMotorVelocitySetpoint = velocitySetpoint;
 
         inputs.angleMotorAppliedVoltage = angleMotorAppliedVoltage;
@@ -74,9 +84,9 @@ public class ModuleIOSim implements ModuleIO {
     @Override
     public void setVelocity(double velocity) {
         velocitySetpoint = velocity;
-        currentVelocity = driveMotor.getAngularVelocityRadPerSec();
+        currentVelocity = mainDriveMotor.getAngularVelocityRadPerSec();
         driveMotorAppliedVoltage = velocityFeedback.calculate(currentVelocity, velocity);
-        driveMotor.setInputVoltage(driveMotorAppliedVoltage);
+        mainDriveMotor.setInputVoltage(driveMotorAppliedVoltage);
     }
 
     @Override

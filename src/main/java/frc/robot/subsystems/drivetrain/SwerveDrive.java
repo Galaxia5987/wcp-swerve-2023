@@ -1,6 +1,5 @@
 package frc.robot.subsystems.drivetrain;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -47,10 +46,12 @@ public class SwerveDrive extends SubsystemBase {
         if (Robot.isReal()) {
             for (int i = 0; i < modules.length; i++) {
                 ModuleIO io = new ModuleIOReal(
-                        Ports.SwerveDrive.DRIVE_IDS[i],
+                        Ports.SwerveDrive.MAIN_DRIVE_IDS[i],
+                        Ports.SwerveDrive.AUX_DRIVE_IDS[i],
                         Ports.SwerveDrive.ANGLE_IDS[i],
                         Ports.SwerveDrive.ENCODER_IDS[i],
-                        SwerveConstants.motionMagicConfigs[i],
+                        Ports.SwerveDrive.MAIN_DRIVE_INVERTED[i],
+                        Ports.SwerveDrive.ANGLE_INVERTED[i],
                         i + 1);
 
                 modules[i] = new SwerveModule(io, i + 1);
