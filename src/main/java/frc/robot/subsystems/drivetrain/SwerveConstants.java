@@ -1,6 +1,5 @@
 package frc.robot.subsystems.drivetrain;
 
-import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -10,8 +9,7 @@ public class SwerveConstants {
             {0.010979025274475631,0.09040772726019318,0.3332016083300402,0.4627730365693259};
 
     public static final double VOLT_COMP_SATURATION = 12;
-    public static final SupplyCurrentLimitConfiguration SUPPLY_CURRENT_LIMIT = new SupplyCurrentLimitConfiguration(true, 50, 0, 0);
-    public static final StatorCurrentLimitConfiguration STATOR_CURRENT_LIMIT = new StatorCurrentLimitConfiguration(true, 50, 0, 0);
+    public static final int CURRENT_LIMIT = 40;
 
     public static final double robotWidth = 0.512; //[m]
     public static final double robotLength = 0.67; //[m]
@@ -34,10 +32,15 @@ public class SwerveConstants {
             REAR_LEFT_MOTION_MAGIC_CONFIGS,
             REAR_RIGHT_MOTION_MAGIC_CONFIGS};
 
-    public static final double DRIVE_kP = 0.005;
-    public static final double DRIVE_kI = 0.0;
-    public static final double DRIVE_kD = 0.148;
-    public static final double DRIVE_KF = 0.05;
+    public static final double MAIN_DRIVE_kP = 0.005;
+    public static final double MAIN_DRIVE_kI = 0.0;
+    public static final double MAIN_DRIVE_kD = 0.148;
+    public static final double MAIN_DRIVE_KF = 0.05;
+    
+    public static final double ANGLE_kP = 0;
+    public static final double ANGLE_kI = 0;
+    public static final double ANGLE_kD = 0;
+    public static final double ANGLE_KF = 0;
 
     public static final double OMEGA_kP = 1.8;
     public static final double OMEGA_kI = 0.0;
@@ -49,9 +52,6 @@ public class SwerveConstants {
 
     public static final double MAX_OMEGA_VELOCITY = MAX_X_Y_VELOCITY/ //[m/s]
             Math.sqrt((robotLength/2)*(robotLength/2)+(robotWidth/2)*(robotWidth/2));
-
-    public static final TalonFXInvertType CLOCKWISE = TalonFXInvertType.Clockwise;
-    public static final TalonFXInvertType COUNTER_CLOCKWISE = TalonFXInvertType.CounterClockwise;
 
     public static final double NEUTRAL_DEADBAND = 0.15;
     public static final double XBOX_DEADBAND = 0.15;
