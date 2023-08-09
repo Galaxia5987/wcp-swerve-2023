@@ -1,7 +1,5 @@
 package frc.robot.subsystems.drivetrain;
 
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import edu.wpi.first.math.geometry.Translation2d;
 
 public class SwerveConstants {
@@ -9,7 +7,8 @@ public class SwerveConstants {
             {0.010979025274475631,0.09040772726019318,0.3332016083300402,0.4627730365693259};
 
     public static final double VOLT_COMP_SATURATION = 12;
-    public static final int CURRENT_LIMIT = 40;
+    public static final int DRIVE_MOTOR_CURRENT_LIMIT = 40;
+    public static final int ANGLE_MOTOR_CURRENT_LIMIT = 30; //TODO: check if should be 20 instead
 
     public static final double robotWidth = 0.512; //[m]
     public static final double robotLength = 0.67; //[m]

@@ -46,17 +46,17 @@ public class ModuleIOReal implements ModuleIO {
 
         mainDriveMotor.enableVoltageCompensation(SwerveConstants.VOLT_COMP_SATURATION);
         mainDriveMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        mainDriveMotor.setSmartCurrentLimit(SwerveConstants.CURRENT_LIMIT);
+        mainDriveMotor.setSmartCurrentLimit(SwerveConstants.DRIVE_MOTOR_CURRENT_LIMIT);
         mainDriveMotor.setInverted(driveInvert);
 
         auxDriveMotor.follow(mainDriveMotor); //TODO: check if should oppose
         auxDriveMotor.enableVoltageCompensation(SwerveConstants.VOLT_COMP_SATURATION);
         auxDriveMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        auxDriveMotor.setSmartCurrentLimit(SwerveConstants.CURRENT_LIMIT);
+        auxDriveMotor.setSmartCurrentLimit(SwerveConstants.DRIVE_MOTOR_CURRENT_LIMIT);
 
         angleMotor.enableVoltageCompensation(SwerveConstants.VOLT_COMP_SATURATION);
         angleMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        angleMotor.setSmartCurrentLimit(SwerveConstants.CURRENT_LIMIT);
+        angleMotor.setSmartCurrentLimit(SwerveConstants.ANGLE_MOTOR_CURRENT_LIMIT);
         angleMotor.setInverted(angleInvert);
     }
 
