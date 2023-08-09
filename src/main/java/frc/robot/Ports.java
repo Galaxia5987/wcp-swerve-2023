@@ -61,6 +61,15 @@ public final class Ports {
         };
     }
 
+    public static final class Intake{
+        public static final int ANGLE_MOTOR_ID = 0;
+        public static final int SPIN_MOTOR_ID = 0;
+    }
+
+    public static final class Gripper{
+        public static final int SOLENOID_ID = 0;
+    }
+
     public static class UI {
         public static final int JOYSTICK_TRIGGER = 1;
         public static final int JOYSTICK_TOP_BOTTOM_BUTTON = 2;

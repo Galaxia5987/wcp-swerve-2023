@@ -6,21 +6,20 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import frc.robot.Constants;
+import frc.robot.Ports;
 import frc.robot.utils.units.UnitModel;
 
 public class IntakeIOReal implements IntakeIO{
+    private static IntakeIOReal INSTANCE = null;
 
-    private final TalonFX angleMotor;
-    private final CANSparkMax spinMotor;
+    private final TalonFX angleMotor = new TalonFX(Ports.Intake.ANGLE_MOTOR_ID);
+    private final CANSparkMax spinMotor = new CANSparkMax(Ports.Intake.SPIN_MOTOR_ID, CANSparkMaxLowLevel.MotorType.kBrushless);
 
     private double angleSetpoint;
 
     private final UnitModel ticksPerRad = new UnitModel(IntakeConstants.TICKS_PER_RADIAN);
 
-    public IntakeIOReal(int angleMotorID, int spinMotorID){
-        this.angleMotor = new TalonFX(angleMotorID);
-        this.spinMotor = new CANSparkMax(spinMotorID, CANSparkMaxLowLevel.MotorType.kBrushless);
-
+    public IntakeIOReal(){
         angleMotor.configFactoryDefault();
         spinMotor.restoreFactoryDefaults();
 
