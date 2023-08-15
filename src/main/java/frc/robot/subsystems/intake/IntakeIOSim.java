@@ -27,6 +27,11 @@ public class IntakeIOSim implements IntakeIO{
         spinMotor.update(0.02);
 
 
+        inputs.angle = currentAngle.get();
+        inputs.angleSetpoint = angleSetpoint;
+        inputs.angleMotorAppliedVoltage = angleMotorAppliedVoltage;
+
+        inputs.spinMotorAppliedVoltage = spinMotorAppliedVoltage;
     }
 
     @Override
