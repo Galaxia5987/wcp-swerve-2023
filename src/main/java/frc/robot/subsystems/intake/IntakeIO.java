@@ -24,5 +24,6 @@ public interface IntakeIO {
         public double angleMotorAppliedVoltage = 0;
 
         public double spinMotorAppliedVoltage = 0;
+        public double spinMotorVelocity = 0;
     }
 }
