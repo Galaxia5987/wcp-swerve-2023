@@ -41,6 +41,15 @@ public class IntakeIOReal implements IntakeIO{
     }
 
     @Override
+    public void updateInputs(IntakeInputs inputs) {
+        inputs.angle = getAngle();
+        inputs.angleSetpoint = angleSetpoint;
+        inputs.angleMotorVelocity = angleMotor.getSelectedSensorVelocity();
+
+        inputs.spinMotorVelocity = getSpinMotorVelocity();
+    }
+
+    @Override
     public double getAngle() {
         return ticksPerRad.toUnits(angleMotor.getSelectedSensorPosition());
     }
