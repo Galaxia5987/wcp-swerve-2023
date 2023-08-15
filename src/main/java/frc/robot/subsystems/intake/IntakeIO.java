@@ -10,7 +10,9 @@ public interface IntakeIO {
 
     void setAngle(double angle);
 
-    double getSpinMotorPower();
+    default double getSpinMotorVelocity(){
+        return 0;
+    }
 
     void setSpinMotorPower(double power);
 

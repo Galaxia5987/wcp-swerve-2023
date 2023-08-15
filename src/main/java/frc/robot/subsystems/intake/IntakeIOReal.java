@@ -52,19 +52,12 @@ public class IntakeIOReal implements IntakeIO{
     }
 
     @Override
-    public double getSpinMotorPower() {
+    public double getSpinMotorVelocity() {
         return spinMotor.getEncoder().getVelocity();
     }
 
     @Override
     public void setSpinMotorPower(double power) {
         spinMotor.set(power);
-    }
-
-    @Override
-    public void updateInputs(IntakeInputs inputs) {
-        inputs.angle = getAngle();
-        inputs.angleSetpoint = angleSetpoint;
-        inputs.angleMotorVelocity = angleMotor.getSelectedSensorVelocity();
     }
 }
