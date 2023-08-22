@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.drivetrain.SwerveConstants;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
-public class XboxDrive extends CommandBase {
+public class XboxDrive extends CommandBase { //TODO: after checking slew rate limiter in main implement here
     private final SwerveDrive swerveDrive;
     private final XboxController xboxController;
 
