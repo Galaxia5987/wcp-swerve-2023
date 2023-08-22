@@ -29,8 +29,6 @@ public class SwerveDrive extends SubsystemBase {
     private Derivative acceleration = new Derivative(0, 0);
     private final LinearFilter accelFilter = LinearFilter.movingAverage(5);
 
-    private final SlewRateLimiter accelerationFilter = new SlewRateLimiter(4, 1, 0);
-
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
             SwerveConstants.wheelPositions[0],
             SwerveConstants.wheelPositions[1],
@@ -177,17 +175,12 @@ public class SwerveDrive extends SubsystemBase {
     public void drive(ChassisSpeeds chassisSpeeds, boolean fieldOriented) { //TODO: check if field oriented option works
         loggerInputs.desiredSpeeds = Utils.chassisSpeedsToArray(chassisSpeeds);
 
-        if (!fieldOriented){
-            chassisSpeeds = chassisSpeeds;
-        }
-        else {
             chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                    accelerationFilter.calculate(chassisSpeeds.vxMetersPerSecond), //TODO: check if acceleration filter works
-                    accelerationFilter.calculate(chassisSpeeds.vyMetersPerSecond),
+                    chassisSpeeds.vxMetersPerSecond,
+                    chassisSpeeds.vyMetersPerSecond,
                     chassisSpeeds.omegaRadiansPerSecond,
                     new Rotation2d(getYaw())
             );
-        }
 
         if (chassisSpeeds.equals(new ChassisSpeeds(0, 0, 0))) {
             for (SwerveModule module : modules) {
