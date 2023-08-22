@@ -28,9 +28,9 @@ public class SwerveDrive extends SubsystemBase {
     private boolean shouldKeepAngle = false;
 
     private Derivative acceleration = new Derivative(0, 0);
-    private final LinearFilter accelFilter = LinearFilter.movingAverage(5);
+    private final LinearFilter accelFilter = LinearFilter.movingAverage(15);
 
-    private final SlewRateLimiter accelerationFilter = new SlewRateLimiter(4, 1, 0);
+    private double linearVelocity;
 
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
             SwerveConstants.wheelPositions[0],
@@ -151,6 +151,10 @@ public class SwerveDrive extends SubsystemBase {
         return kinematics;
     }
 
+    public double getVelocity(){
+        return linearVelocity;
+    }
+
     public void resetPose() {
         odometry.resetPosition(new Rotation2d(getYaw()), modulePositions, new Pose2d());
     }
@@ -255,6 +259,7 @@ public class SwerveDrive extends SubsystemBase {
         }
 
         loggerInputs.linearVelocity = Math.hypot(loggerInputs.currentSpeeds[0], loggerInputs.currentSpeeds[1]);
+        linearVelocity = loggerInputs.linearVelocity;
 
         acceleration.update(loggerInputs.linearVelocity);
         loggerInputs.acceleration = accelFilter.calculate(acceleration.get());
