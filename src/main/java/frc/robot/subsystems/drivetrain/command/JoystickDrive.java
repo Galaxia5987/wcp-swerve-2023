@@ -9,11 +9,12 @@ import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.utils.Utils;
 
 public class JoystickDrive extends CommandBase {
-    private final SwerveDrive swerveDrive = SwerveDrive.getInstance();
+    private final SwerveDrive swerveDrive;
     private final Joystick joystick1;
     private final Joystick joystick2;
 
-    public JoystickDrive(Joystick joystick1, Joystick joystick2) {
+    public JoystickDrive(SwerveDrive swerveDrive, Joystick joystick1, Joystick joystick2) {
+        this.swerveDrive = swerveDrive;
         this.joystick1 = joystick1;
         this.joystick2 = joystick2;
         addRequirements(swerveDrive);
