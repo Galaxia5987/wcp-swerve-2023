@@ -27,6 +27,7 @@ public class RobotContainer {
     private final XboxController xboxController = new XboxController(0);
     private final JoystickButton lb = new JoystickButton(xboxController, XboxController.Button.kLeftBumper.value);
     private final JoystickButton rb = new JoystickButton(xboxController, XboxController.Button.kRightBumper.value);
+    private final JoystickButton joystick1Trigger = new JoystickButton(joystick1, Joystick.ButtonType.kTrigger.value);
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -44,10 +45,13 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        swerveDrive.setDefaultCommand(new XboxDrive(swerveDrive, xboxController));
+//        swerveDrive.setDefaultCommand(new XboxDrive(swerveDrive, xboxController));
+        swerveDrive.setDefaultCommand(new JoystickDrive(swerveDrive, joystick1, joystick2));
     }
 
     private void configureButtonBindings() {
+        joystick1Trigger.onTrue(new InstantCommand(swerveDrive::resetGyro));
+
         lb.onTrue(new InstantCommand(swerveDrive::resetGyro));
         rb.onTrue(new InstantCommand(swerveDrive::resetPose));
     }
