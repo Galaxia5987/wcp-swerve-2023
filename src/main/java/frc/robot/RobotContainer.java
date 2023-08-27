@@ -44,7 +44,7 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        swerveDrive.setDefaultCommand(new JoystickDrive(joystick1, joystick2));
+        swerveDrive.setDefaultCommand(new XboxDrive(swerveDrive, xboxController));
     }
 
     private void configureButtonBindings() {
