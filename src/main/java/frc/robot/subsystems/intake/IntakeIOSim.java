@@ -66,4 +66,9 @@ public class IntakeIOSim implements IntakeIO{
         spinMotorAppliedVoltage = power*IntakeConstants.VOLT_COMPENSATION_SATURATION;
         spinMotor.setInputVoltage(spinMotorAppliedVoltage);
     }
+
+    @Override
+    public double getAngleMotorCurrent() {
+        return angleMotor.getCurrentDrawAmps();
+    }
 }

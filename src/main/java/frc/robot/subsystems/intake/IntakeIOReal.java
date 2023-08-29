@@ -40,6 +40,13 @@ public class IntakeIOReal implements IntakeIO{
         spinMotor.burnFlash();
     }
 
+    public IntakeIOReal getInstance(){
+        if (INSTANCE == null){
+            INSTANCE = new IntakeIOReal();
+        }
+        return INSTANCE;
+    }
+
     @Override
     public void updateInputs(IntakeInputs inputs) {
         inputs.angle = getAngle();
@@ -68,5 +75,15 @@ public class IntakeIOReal implements IntakeIO{
     @Override
     public void setSpinMotorPower(double power) {
         spinMotor.set(power);
+    }
+
+    @Override
+    public double getAngleMotorCurrent() {
+        return angleMotor.getSupplyCurrent();
+    }
+
+    @Override
+    public void resetEncoder(double angle) {
+        angleMotor.setSelectedSensorPosition(ticksPerRad.toTicks(angle));
     }
 }

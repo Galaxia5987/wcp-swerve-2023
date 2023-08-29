@@ -16,6 +16,10 @@ public interface IntakeIO {
 
     void setSpinMotorPower(double power);
 
+    double getAngleMotorCurrent();
+
+    default void resetEncoder(double angle){}
+
     @AutoLog
     class IntakeInputs{
         public double angle = 0;
