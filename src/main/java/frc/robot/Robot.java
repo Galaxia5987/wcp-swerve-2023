@@ -36,6 +36,7 @@ public class Robot extends LoggedRobot {
     private RobotContainer robotContainer;
     private Command autonomousCommand;
     private BooleanTrigger encoderTrigger = new BooleanTrigger(false, false);
+    private boolean updated = false;
 
     /**
      * This function is run when the robot is first started up and should be used for any
@@ -84,6 +85,7 @@ public class Robot extends LoggedRobot {
 
         if (encoderTrigger.triggered()) {
             SwerveDrive.getInstance().updateOffsets(SwerveConstants.OFFSETS);
+//            updated = true;
         }
     }
 
